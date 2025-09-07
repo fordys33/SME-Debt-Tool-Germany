@@ -25,15 +25,14 @@ def create_static_site():
     # Define all routes and their templates
     routes = [
         ("/", "index.html", "index"),
-        ("/debt-brake", "debt-brake.html", "debt_brake"),
-        ("/cost-analysis", "cost-analysis.html", "cost_analysis"),
-        ("/debt-equity", "debt-equity.html", "debt_equity"),
-        ("/debt-snowball", "debt-snowball.html", "debt_snowball"),
-        ("/funding-guidance", "funding-guidance.html", "funding_guidance"),
-        ("/covenant-tracking", "covenant-tracking.html", "covenant_tracking"),
+        ("/donation", "donation.html", "donation"),
+        ("/debt-brake", "debt_brake.html", "debt_brake"),
+        ("/cost-analysis", "cost_analysis.html", "cost_analysis"),
+        ("/debt-equity", "debt_equity.html", "debt_equity"),
+        ("/debt-snowball", "debt_snowball.html", "debt_snowball"),
+        ("/funding", "funding_guidance.html", "funding_guidance"),
+        ("/covenants", "covenant_tracking.html", "covenant_tracking"),
         ("/about", "about.html", "about"),
-        ("/404", "404.html", "not_found"),
-        ("/500", "500.html", "internal_error")
     ]
     
     print("🚀 Generating static site...")
@@ -45,13 +44,23 @@ def create_static_site():
             try:
                 with app.test_request_context():
                     if template_name == "index":
-                        html_content = app.jinja_env.get_template('index.html').render()
-                    elif template_name == "not_found":
-                        html_content = app.jinja_env.get_template('404.html').render()
-                    elif template_name == "internal_error":
-                        html_content = app.jinja_env.get_template('500.html').render()
-                    else:
-                        html_content = app.jinja_env.get_template(f'{template_name}.html').render()
+                        html_content = app.jinja_env.get_template('index.html').render(lang='en')
+                    elif template_name == "donation":
+                        html_content = app.jinja_env.get_template('donation.html').render(lang='en')
+                    elif template_name == "debt_brake":
+                        html_content = app.jinja_env.get_template('debt_brake.html').render(lang='en')
+                    elif template_name == "cost_analysis":
+                        html_content = app.jinja_env.get_template('cost_analysis.html').render(lang='en')
+                    elif template_name == "debt_equity":
+                        html_content = app.jinja_env.get_template('debt_equity.html').render(lang='en')
+                    elif template_name == "debt_snowball":
+                        html_content = app.jinja_env.get_template('debt_snowball.html').render(lang='en')
+                    elif template_name == "funding_guidance":
+                        html_content = app.jinja_env.get_template('funding_guidance.html').render(lang='en')
+                    elif template_name == "covenant_tracking":
+                        html_content = app.jinja_env.get_template('covenant_tracking.html').render(lang='en')
+                    elif template_name == "about":
+                        html_content = app.jinja_env.get_template('about.html').render(lang='en')
                     
                     # Write HTML file
                     file_path = os.path.join(output_dir, filename)
@@ -69,16 +78,26 @@ def create_static_site():
                 # Set German language in session for translation
                 with app.test_request_context():
                     from flask import session
-                    session['language'] = 'de'
+                    session['lang'] = 'de'
                     
                     if template_name == "index":
-                        html_content = app.jinja_env.get_template('index.html').render()
-                    elif template_name == "not_found":
-                        html_content = app.jinja_env.get_template('404.html').render()
-                    elif template_name == "internal_error":
-                        html_content = app.jinja_env.get_template('500.html').render()
-                    else:
-                        html_content = app.jinja_env.get_template(f'{template_name}.html').render()
+                        html_content = app.jinja_env.get_template('index.html').render(lang='de')
+                    elif template_name == "donation":
+                        html_content = app.jinja_env.get_template('donation.html').render(lang='de')
+                    elif template_name == "debt_brake":
+                        html_content = app.jinja_env.get_template('debt_brake.html').render(lang='de')
+                    elif template_name == "cost_analysis":
+                        html_content = app.jinja_env.get_template('cost_analysis.html').render(lang='de')
+                    elif template_name == "debt_equity":
+                        html_content = app.jinja_env.get_template('debt_equity.html').render(lang='de')
+                    elif template_name == "debt_snowball":
+                        html_content = app.jinja_env.get_template('debt_snowball.html').render(lang='de')
+                    elif template_name == "funding_guidance":
+                        html_content = app.jinja_env.get_template('funding_guidance.html').render(lang='de')
+                    elif template_name == "covenant_tracking":
+                        html_content = app.jinja_env.get_template('covenant_tracking.html').render(lang='de')
+                    elif template_name == "about":
+                        html_content = app.jinja_env.get_template('about.html').render(lang='de')
                     
                     # Create German directory structure
                     de_filename = filename.replace('.html', '-de.html')
