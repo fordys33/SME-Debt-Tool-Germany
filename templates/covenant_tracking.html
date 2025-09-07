@@ -17,7 +17,7 @@
                         <div class="col-12 col-md-6">
                             <label for="companyName" class="form-label">{{ _('Company Name') }}</label>
                             <input type="text" class="form-control" id="companyName" name="companyName" 
-                                   placeholder="Your Company GmbH" required>
+                                   placeholder="{{ _('Your Company GmbH') }}" required>
                         </div>
                         
                         <div class="col-12 col-md-6">
@@ -43,7 +43,7 @@
                         </div>
                         
                         <div class="col-12 col-md-6">
-                            <label for="totalAssets" class="form-label">{{ _('Total Assets') }} (€)</label>
+                            <label for="totalAssets" class="form-label">{{ _('Total Assets (€)') }}</label>
                             <input type="number" class="form-control" id="totalAssets" name="totalAssets" 
                                    placeholder="1000000" min="0" step="1000" required>
                         </div>
@@ -170,6 +170,29 @@
 </div>
 
 <script>
+// Translation strings for JavaScript
+const translations = {
+    pleaseFillMetrics: '{{ _("Please fill in all required financial metrics.") }}',
+    allCompliant: '{{ _("All Covenants Compliant") }}',
+    violationsDetected: '{{ _("Covenant Violations Detected") }}',
+    companyCompliant: '{{ _("Your company is in compliance with all debt covenants.") }}',
+    someNotMet: '{{ _("Some covenants are not being met. Review the details below.") }}',
+    debtToEbitda: '{{ _("Debt-to-EBITDA Ratio") }}',
+    interestCoverage: '{{ _("Interest Coverage Ratio") }}',
+    debtToAssets: '{{ _("Debt-to-Assets Ratio") }}',
+    cashFlowCoverage: '{{ _("Cash Flow Coverage") }}',
+    compliant: '{{ _("Compliant") }}',
+    violation: '{{ _("Violation") }}',
+    current: '{{ _("Current:") }}',
+    limit: '{{ _("Limit:") }}',
+    actionRequired: '{{ _("Action Required:") }}',
+    adviceDebtToEbitda: '{{ _("Consider reducing debt or increasing EBITDA through operational improvements.") }}',
+    adviceInterestCoverage: '{{ _("Focus on increasing operating income or reducing interest expenses.") }}',
+    adviceDebtToAssets: '{{ _("Consider reducing debt or increasing asset base through investments.") }}',
+    adviceCashFlow: '{{ _("Improve operating cash flow or consider debt restructuring.") }}',
+    reviewPerformance: '{{ _("Review financial performance and consider corrective actions.") }}'
+};
+
 function calculateCovenants() {
     const totalDebt = parseFloat(document.getElementById('totalDebt').value);
     const ebitda = parseFloat(document.getElementById('ebitda').value);
@@ -182,7 +205,7 @@ function calculateCovenants() {
     const minCashFlowCoverage = parseFloat(document.getElementById('minCashFlowCoverage').value);
     
     if (!totalDebt || !ebitda || !totalAssets || !cashFlow) {
-        showMobileError('Please fill in all required financial metrics.');
+        showMobileError(translations.pleaseFillMetrics);
         return;
     }
     
@@ -236,14 +259,14 @@ function displayCovenantResults(compliance) {
         <div class="card-header ${allCompliant ? 'bg-success text-white' : 'bg-warning text-dark'}">
             <h5 class="mb-0">
                 <i class="fas fa-${allCompliant ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
-                ${allCompliant ? 'All Covenants Compliant' : 'Covenant Violations Detected'}
+                ${allCompliant ? translations.allCompliant : translations.violationsDetected}
             </h5>
         </div>
         <div class="card-body">
             <p class="mb-0">
                 ${allCompliant ? 
-                    'Your company is in compliance with all debt covenants.' : 
-                    'Some covenants are not being met. Review the details below.'
+                    translations.companyCompliant : 
+                    translations.someNotMet
                 }
             </p>
         </div>
@@ -252,10 +275,10 @@ function displayCovenantResults(compliance) {
     
     // Individual covenant results
     const covenantNames = {
-        debtToEbitda: 'Debt-to-EBITDA Ratio',
-        interestCoverage: 'Interest Coverage Ratio',
-        debtToAssets: 'Debt-to-Assets Ratio',
-        cashFlowCoverage: 'Cash Flow Coverage'
+        debtToEbitda: translations.debtToEbitda,
+        interestCoverage: translations.interestCoverage,
+        debtToAssets: translations.debtToAssets,
+        cashFlowCoverage: translations.cashFlowCoverage
     };
     
     Object.entries(compliance).forEach(([key, covenant]) => {
@@ -266,23 +289,23 @@ function displayCovenantResults(compliance) {
                 <div class="d-flex justify-content-between align-items-center mb-2">
                     <h6 class="card-title mb-0">${covenantNames[key]}</h6>
                     <span class="badge ${covenant.compliant ? 'bg-success' : 'bg-danger'}">
-                        ${covenant.compliant ? 'Compliant' : 'Violation'}
+                        ${covenant.compliant ? translations.compliant : translations.violation}
                     </span>
                 </div>
                 <div class="row">
                     <div class="col-6">
-                        <strong>Current:</strong><br>
+                        <strong>${translations.current}</strong><br>
                         <span class="text-${covenant.compliant ? 'success' : 'danger'}">${covenant.value.toFixed(2)}</span>
                     </div>
                     <div class="col-6">
-                        <strong>Limit:</strong><br>
+                        <strong>${translations.limit}</strong><br>
                         <span class="text-muted">${covenant.limit}</span>
                     </div>
                 </div>
                 ${!covenant.compliant ? `
                     <div class="alert alert-warning mt-2 mb-0">
                         <i class="fas fa-exclamation-triangle me-2"></i>
-                        <strong>Action Required:</strong> ${getCovenantAdvice(key, covenant)}
+                        <strong>${translations.actionRequired}</strong> ${getCovenantAdvice(key, covenant)}
                     </div>
                 ` : ''}
             </div>
@@ -300,12 +323,12 @@ function displayCovenantResults(compliance) {
 
 function getCovenantAdvice(key, covenant) {
     const advice = {
-        debtToEbitda: 'Consider reducing debt or increasing EBITDA through operational improvements.',
-        interestCoverage: 'Focus on increasing operating income or reducing interest expenses.',
-        debtToAssets: 'Consider reducing debt or increasing asset base through investments.',
-        cashFlowCoverage: 'Improve operating cash flow or consider debt restructuring.'
+        debtToEbitda: translations.adviceDebtToEbitda,
+        interestCoverage: translations.adviceInterestCoverage,
+        debtToAssets: translations.adviceDebtToAssets,
+        cashFlowCoverage: translations.adviceCashFlow
     };
-    return advice[key] || 'Review financial performance and consider corrective actions.';
+    return advice[key] || translations.reviewPerformance;
 }
 
 function resetForm() {

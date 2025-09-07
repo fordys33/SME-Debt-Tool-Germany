@@ -138,6 +138,20 @@
     </div>
 </div>
 
+<!-- Hidden translated strings for JavaScript -->
+<div id="translations" style="display: none;"
+     data-please-enter-your-monthly-payment-amount="{{ _('Please enter your monthly payment amount.') }}"
+     data-please-add-at-least-one-debt-account="{{ _('Please add at least one debt account.') }}"
+     data-summary="{{ _('Summary') }}"
+     data-total-debt="{{ _('Total Debt') }}"
+     data-total-interest="{{ _('Total Interest') }}"
+     data-months-to-payoff="{{ _('Months to Payoff') }}"
+     data-total-paid="{{ _('Total Paid') }}"
+     data-original-balance="{{ _('Original Balance') }}"
+     data-interest="{{ _('Interest') }}"
+     data-months="{{ _('Months') }}">
+</div>
+
 <script>
 let debtCount = 1;
 
@@ -149,15 +163,15 @@ function addDebtEntry() {
     newEntry.innerHTML = `
         <div class="row g-3">
             <div class="col-12 col-md-4">
-                <label class="form-label">${_('Debt Name')}</label>
+                <label class="form-label">{{ _('Debt Name') }}</label>
                 <input type="text" class="form-control debt-name" placeholder="Credit Card" required>
             </div>
             <div class="col-12 col-md-4">
-                <label class="form-label">${_('Balance')} (€)</label>
+                <label class="form-label">{{ _('Balance') }} (€)</label>
                 <input type="number" class="form-control debt-balance" placeholder="5000" min="0" step="100" required>
             </div>
             <div class="col-12 col-md-4">
-                <label class="form-label">${_('Interest Rate')} (%)</label>
+                <label class="form-label">{{ _('Interest Rate') }} (%)</label>
                 <input type="number" class="form-control debt-rate" placeholder="18" min="0" max="50" step="0.1" required>
             </div>
         </div>
@@ -179,7 +193,7 @@ function calculateSnowball() {
     const strategy = document.getElementById('strategy').value;
     
     if (!monthlyPayment) {
-        showMobileError('Please enter your monthly payment amount.');
+        showMobileError(document.getElementById('translations').dataset.pleaseEnterYourMonthlyPaymentAmount);
         return;
     }
     
@@ -197,7 +211,7 @@ function calculateSnowball() {
     });
     
     if (debts.length === 0) {
-        showMobileError('Please add at least one debt account.');
+        showMobileError(document.getElementById('translations').dataset.pleaseAddAtLeastOneDebtAccount);
         return;
     }
     
@@ -267,6 +281,7 @@ function calculateRepaymentPlan(debts, monthlyPayment) {
 function displaySnowballResults(results, strategy) {
     const resultsDiv = document.getElementById('results');
     const resultsContent = document.getElementById('resultsContent');
+    const translations = document.getElementById('translations').dataset;
     
     if (!resultsDiv || !resultsContent) return;
     
@@ -278,25 +293,25 @@ function displaySnowballResults(results, strategy) {
     summaryCard.className = 'card mb-4';
     summaryCard.innerHTML = `
         <div class="card-header">
-            <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Summary</h5>
+            <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>${translations.summary}</h5>
         </div>
         <div class="card-body">
             <div class="row text-center">
                 <div class="col-6 col-md-3">
                     <h6 class="text-primary">${formatNumber(results.totalDebt)}</h6>
-                    <small>Total Debt</small>
+                    <small>${translations.totalDebt}</small>
                 </div>
                 <div class="col-6 col-md-3">
                     <h6 class="text-warning">${formatNumber(results.totalInterest)}</h6>
-                    <small>Total Interest</small>
+                    <small>${translations.totalInterest}</small>
                 </div>
                 <div class="col-6 col-md-3">
                     <h6 class="text-info">${results.totalMonths}</h6>
-                    <small>Months to Payoff</small>
+                    <small>${translations.monthsToPayoff}</small>
                 </div>
                 <div class="col-6 col-md-3">
                     <h6 class="text-success">${formatNumber(results.totalDebt + results.totalInterest)}</h6>
-                    <small>Total Paid</small>
+                    <small>${translations.totalPaid}</small>
                 </div>
             </div>
         </div>
@@ -318,19 +333,19 @@ function displaySnowballResults(results, strategy) {
                 <div class="row text-center">
                     <div class="col-6 col-md-3">
                         <h6 class="text-primary">${formatNumber(debt.originalBalance)}</h6>
-                        <small>Original Balance</small>
+                        <small>${translations.originalBalance}</small>
                     </div>
                     <div class="col-6 col-md-3">
                         <h6 class="text-warning">${formatNumber(debt.interest)}</h6>
-                        <small>Interest</small>
+                        <small>${translations.interest}</small>
                     </div>
                     <div class="col-6 col-md-3">
                         <h6 class="text-info">${debt.months}</h6>
-                        <small>Months</small>
+                        <small>${translations.months}</small>
                     </div>
                     <div class="col-6 col-md-3">
                         <h6 class="text-success">${formatNumber(debt.totalPaid)}</h6>
-                        <small>Total Paid</small>
+                        <small>${translations.totalPaid}</small>
                     </div>
                 </div>
             </div>

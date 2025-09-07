@@ -124,6 +124,19 @@
     </div>
 </div>
 
+<!-- Hidden translations for JavaScript -->
+<div id="translations" style="display: none;"
+     data-please-fill-in-all-required-fields="{{ _('Please fill in all required fields.') }}"
+     data-net-income="{{ _('Net Income') }}"
+     data-max-monthly-debt-service="{{ _('Max Monthly Debt Service') }}"
+     data-max-new-debt-capacity="{{ _('Max New Debt Capacity') }}"
+     data-current-debt-to-income-ratio="{{ _('Current Debt-to-Income Ratio') }}"
+     data-sustainable="{{ _('Sustainable') }}"
+     data-warning="{{ _('Warning') }}"
+     data-sustainable-limits="{{ _('Your current debt level is within sustainable limits.') }}"
+     data-exceeds-limits="{{ _('Your current debt level exceeds recommended limits. Consider reducing debt or increasing income.') }}">
+</div>
+
 <script>
 function calculateDebtBrake() {
     const revenue = parseFloat(document.getElementById('revenue').value);
@@ -132,7 +145,7 @@ function calculateDebtBrake() {
     const debtServiceRatio = parseFloat(document.getElementById('debtServiceRatio').value);
     
     if (!revenue || !expenses || existingDebt === undefined) {
-        showMobileError('Please fill in all required fields.');
+        showMobileError(document.getElementById('translations').dataset.pleaseFillInAllRequiredFields);
         return;
     }
     
@@ -163,27 +176,28 @@ function displayDebtBrakeResults(results) {
     resultsContent.innerHTML = '';
     
     // Create results cards
+    const translations = document.getElementById('translations').dataset;
     const cards = [
         {
-            title: 'Net Income',
+            title: translations.netIncome,
             value: results.netIncome,
             icon: 'fas fa-euro-sign',
             color: 'success'
         },
         {
-            title: 'Max Monthly Debt Service',
+            title: translations.maxMonthlyDebtService,
             value: results.maxDebtService,
             icon: 'fas fa-calculator',
             color: 'primary'
         },
         {
-            title: 'Max New Debt Capacity',
+            title: translations.maxNewDebtCapacity,
             value: results.maxNewDebt,
             icon: 'fas fa-plus-circle',
             color: 'info'
         },
         {
-            title: 'Current Debt-to-Income Ratio',
+            title: translations.currentDebtToIncomeRatio,
             value: (results.debtToIncomeRatio * 100).toFixed(1) + '%',
             icon: 'fas fa-percentage',
             color: results.isSustainable ? 'success' : 'warning'
@@ -214,10 +228,10 @@ function displayDebtBrakeResults(results) {
     assessmentDiv.className = `alert alert-${results.isSustainable ? 'success' : 'warning'}`;
     assessmentDiv.innerHTML = `
         <i class="fas fa-${results.isSustainable ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
-        <strong>${results.isSustainable ? 'Sustainable' : 'Warning'}:</strong>
+        <strong>${results.isSustainable ? translations.sustainable : translations.warning}:</strong>
         ${results.isSustainable ? 
-            'Your current debt level is within sustainable limits.' : 
-            'Your current debt level exceeds recommended limits. Consider reducing debt or increasing income.'
+            translations.sustainableLimits : 
+            translations.exceedsLimits
         }
     `;
     resultsContent.appendChild(assessmentDiv);

@@ -1,14 +1,14 @@
 {
-    "name": "SME Debt Management Tool",
-    "short_name": "SME Debt Tool",
-    "description": "Comprehensive debt management solutions for German SMEs",
+    "name": "SME-Schuldenmanagement-Tool",
+    "short_name": "SME-Schulden-Tool",
+    "description": "Umfassende Schuldenmanagement-Lösungen für deutsche KMU",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#0d6efd",
     "orientation": "portrait-primary",
     "scope": "/",
-    "lang": "en",
+    "lang": "de",
     "icons": [
         {
             "src": "/static/favicon-16x16.png",

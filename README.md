@@ -1,58 +1,58 @@
-# SME Debt Management Tool for Germany
+# SME-Schuldenmanagement-Tool für Deutschland
 
-A comprehensive web application designed to help small and medium-sized enterprises (SMEs) in Germany manage their debt effectively. This tool integrates Germany's debt brake mechanism, cost analysis, and funding guidance tailored for SMEs.
+Eine Startup-Initiative, die Innovation durch die Menschen Deutschlands vorantreibt, mit besonderer Wertschätzung für die Schönheit von Volkach. Dieses Tool integriert Deutschlands Schuldenbremse-Mechanismus, Kostenanalyse und Finanzierungsberatung, speziell für KMU zugeschnitten.
 
-## Features
+## Funktionen
 
-- **Debt Brake Calculator**: Calculate borrowing limits based on revenue (0.35% of GDP equivalent)
-- **Cost of Debt Analysis**: Analyze pre-tax and after-tax cost of debt
-- **Debt-for-Equity Swap Simulation**: Simulate partnerships and equity conversions
-- **Debt Snowball Prioritization**: Prioritize debt repayment by interest rate
-- **EU/Federal Funding Guidance**: Get tailored advice on available funding programs
-- **Debt Covenant Tracking**: Monitor financial ratios for compliance
+- **Schuldenbremse-Rechner**: Berechnen Sie Kreditlimits basierend auf Umsatz (0,35% des BIP-Äquivalents)
+- **Schuldenkosten-Analyse**: Analysieren Sie Vor- und Nachsteuer-Kosten von Schulden
+- **Schulden-Eigenkapital-Tausch-Simulation**: Simulieren Sie Partnerschaften und Eigenkapitalumwandlungen
+- **Schulden-Schneeball-Priorisierung**: Priorisieren Sie Schuldentilgung nach Zinssatz
+- **EU/Bundesfinanzierungsberatung**: Erhalten Sie maßgeschneiderte Beratung zu verfügbaren Finanzierungsprogrammen
+- **Schulden-Covenant-Verfolgung**: Überwachen Sie Finanzkennzahlen auf Einhaltung
 
-## Technologies Used
+## Verwendete Technologien
 
 - **Backend**: Python Flask
 - **Frontend**: HTML, CSS, Bootstrap 5
-- **Internationalization**: Flask-Babel (English and German)
-- **Styling**: Custom CSS with mobile-first responsive design
+- **Internationalisierung**: Flask-Babel (Deutsch und Englisch)
+- **Styling**: Benutzerdefiniertes CSS mit mobile-first responsive Design
 
 ## Installation
 
-1. Clone the repository:
+1. Repository klonen:
    ```bash
    git clone https://github.com/yourusername/sme-debt-tool-germany.git
    cd sme-debt-tool-germany
    ```
 
-2. Install dependencies:
+2. Abhängigkeiten installieren:
    ```bash
    pip install -r requirements.txt
    ```
 
-3. Run the application:
+3. Anwendung starten:
    ```bash
    python app.py
    ```
 
-4. Open your browser and go to `http://127.0.0.1:5000`
+4. Browser öffnen und zu `http://127.0.0.1:5000` navigieren
 
-## Usage
+## Verwendung
 
-1. Navigate through the modules using the responsive navbar
-2. Switch between English and German using the language dropdown
-3. Input your financial data in each module for personalized calculations
-4. Access the About page for more information and resources
+1. Navigieren Sie durch die Module mit der responsiven Navigationsleiste
+2. Wechseln Sie zwischen Deutsch und Englisch mit dem Sprachdropdown
+3. Geben Sie Ihre Finanzdaten in jedem Modul für personalisierte Berechnungen ein
+4. Greifen Sie auf die Über-Seite für weitere Informationen und Ressourcen zu
 
-## Contributing
+## Mitwirken
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Beiträge sind willkommen! Bitte reichen Sie gerne einen Pull Request ein.
 
-## License
+## Lizenz
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+Dieses Projekt ist unter der MIT-Lizenz lizenziert - siehe die LICENSE-Datei für Details.
 
-## Disclaimer
+## Haftungsausschluss
 
-This tool is for educational and informational purposes only. It does not constitute financial advice. Please consult with qualified financial professionals for personalized guidance.
+Dieses Tool dient nur zu Bildungs- und Informationszwecken. Es stellt keine Finanzberatung dar. Bitte konsultieren Sie qualifizierte Finanzexperten für personalisierte Beratung.

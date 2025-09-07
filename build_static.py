@@ -78,7 +78,7 @@ def create_static_site():
                 # Set German language in session for translation
                 with app.test_request_context():
                     from flask import session
-                    session['lang'] = 'de'
+                    session['language'] = 'de'
                     
                     if template_name == "index":
                         html_content = app.jinja_env.get_template('index.html').render(lang='de')

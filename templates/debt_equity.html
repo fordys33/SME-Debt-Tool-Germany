@@ -38,10 +38,10 @@
                         <div class="col-12 col-md-6">
                             <label for="conversionRatio" class="form-label">{{ _('Conversion Ratio') }}</label>
                             <select class="form-select" id="conversionRatio" name="conversionRatio">
-                                <option value="1.0">1:1 (Par Value)</option>
-                                <option value="1.2" selected>1:1.2 (Premium)</option>
-                                <option value="1.5">1:1.5 (High Premium)</option>
-                                <option value="0.8">1:0.8 (Discount)</option>
+                                <option value="1.0">{{ _('1:1 (Par Value)') }}</option>
+                                <option value="1.2" selected>{{ _('1:1.2 (Premium)') }}</option>
+                                <option value="1.5">{{ _('1:1.5 (High Premium)') }}</option>
+                                <option value="0.8">{{ _('1:0.8 (Discount)') }}</option>
                             </select>
                             <div class="form-text">{{ _('Debt to equity conversion ratio') }}</div>
                         </div>
@@ -124,6 +124,20 @@
     </div>
 </div>
 
+<!-- Hidden translated strings for JavaScript -->
+<div id="translations" style="display: none;"
+     data-current-share-price="{{ _('Current Share Price') }}"
+     data-new-shares-issued="{{ _('New Shares Issued') }}"
+     data-total-shares-after="{{ _('Total Shares After') }}"
+     data-new-share-price="{{ _('New Share Price') }}"
+     data-ownership-dilution="{{ _('Ownership Dilution') }}"
+     data-debt-reduction="{{ _('Debt Reduction') }}"
+     data-impact="{{ _('Impact:') }}"
+     data-this-swap-reduces-debt-by="{{ _('This swap reduces debt by') }}"
+     data-but-dilutes-ownership-by="{{ _('but dilutes ownership by') }}"
+     data-please-fill-in-all-required-fields="{{ _('Please fill in all required fields.') }}">
+</div>
+
 <script>
 function calculateDebtEquity() {
     const debtAmount = parseFloat(document.getElementById('debtAmount').value);
@@ -132,7 +146,7 @@ function calculateDebtEquity() {
     const conversionRatio = parseFloat(document.getElementById('conversionRatio').value);
     
     if (!debtAmount || !companyValue || !existingShares) {
-        showMobileError('Please fill in all required fields.');
+        showMobileError(document.getElementById('translations').dataset.pleaseFillInAllRequiredFields);
         return;
     }
     
@@ -158,6 +172,7 @@ function calculateDebtEquity() {
 function displayDebtEquityResults(results) {
     const resultsDiv = document.getElementById('results');
     const resultsContent = document.getElementById('resultsContent');
+    const translations = document.getElementById('translations').dataset;
     
     if (!resultsDiv || !resultsContent) return;
     
@@ -167,37 +182,37 @@ function displayDebtEquityResults(results) {
     // Create results cards
     const cards = [
         {
-            title: 'Current Share Price',
+            title: translations.currentSharePrice,
             value: results.sharePrice,
             icon: 'fas fa-euro-sign',
             color: 'primary'
         },
         {
-            title: 'New Shares Issued',
+            title: translations.newSharesIssued,
             value: results.newShares,
             icon: 'fas fa-plus-circle',
             color: 'info'
         },
         {
-            title: 'Total Shares After',
+            title: translations.totalSharesAfter,
             value: results.totalShares,
             icon: 'fas fa-chart-line',
             color: 'success'
         },
         {
-            title: 'New Share Price',
+            title: translations.newSharePrice,
             value: results.newSharePrice,
             icon: 'fas fa-euro-sign',
             color: 'warning'
         },
         {
-            title: 'Ownership Dilution',
+            title: translations.ownershipDilution,
             value: results.ownershipDilution.toFixed(1) + '%',
             icon: 'fas fa-percentage',
             color: 'danger'
         },
         {
-            title: 'Debt Reduction',
+            title: translations.debtReduction,
             value: results.debtReduction,
             icon: 'fas fa-minus-circle',
             color: 'success'
@@ -228,8 +243,8 @@ function displayDebtEquityResults(results) {
     impactDiv.className = 'alert alert-info mt-3';
     impactDiv.innerHTML = `
         <i class="fas fa-info-circle me-2"></i>
-        <strong>Impact:</strong>
-        This swap reduces debt by ${formatNumber(results.debtReduction)} but dilutes ownership by ${results.ownershipDilution.toFixed(1)}%.
+        <strong>${translations.impact}</strong>
+        ${translations.thisSwapReducesDebtBy} ${formatNumber(results.debtReduction)} ${translations.butDilutesOwnershipBy} ${results.ownershipDilution.toFixed(1)}%.
     `;
     resultsContent.appendChild(impactDiv);
     

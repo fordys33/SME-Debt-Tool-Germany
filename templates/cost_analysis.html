@@ -141,6 +141,21 @@
     </div>
 </div>
 
+<!-- Hidden translations for JavaScript -->
+<div id="translations" style="display: none;"
+     data-please-fill-in-all-required-fields="{{ _('Please fill in all required fields.') }}"
+     data-monthly-payment="{{ _('Monthly Payment') }}"
+     data-total-interest="{{ _('Total Interest') }}"
+     data-total-fees="{{ _('Total Fees') }}"
+     data-opportunity-cost="{{ _('Opportunity Cost') }}"
+     data-total-cost="{{ _('Total Cost') }}"
+     data-effective-rate="{{ _('Effective Rate') }}"
+     data-cost-breakdown="{{ _('Cost Breakdown') }}"
+     data-interest="{{ _('Interest') }}"
+     data-fees="{{ _('Fees') }}"
+     data-opportunity="{{ _('Opportunity') }}">
+</div>
+
 <script>
 function calculateCostAnalysis() {
     const principal = parseFloat(document.getElementById('principal').value);
@@ -151,7 +166,7 @@ function calculateCostAnalysis() {
     const opportunityCost = parseFloat(document.getElementById('opportunityCost').value) || 8;
     
     if (!principal || !interestRate || !term) {
-        showMobileError('Please fill in all required fields.');
+        showMobileError(document.getElementById('translations').dataset.pleaseFillInAllRequiredFields);
         return;
     }
     
@@ -189,39 +204,40 @@ function displayCostAnalysisResults(results) {
     resultsContent.innerHTML = '';
     
     // Create results cards
+    const translations = document.getElementById('translations').dataset;
     const cards = [
         {
-            title: 'Monthly Payment',
+            title: translations.monthlyPayment,
             value: results.monthlyPayment,
             icon: 'fas fa-calendar-alt',
             color: 'primary'
         },
         {
-            title: 'Total Interest',
+            title: translations.totalInterest,
             value: results.totalInterest,
             icon: 'fas fa-percentage',
             color: 'warning'
         },
         {
-            title: 'Total Fees',
+            title: translations.totalFees,
             value: results.totalFees,
             icon: 'fas fa-euro-sign',
             color: 'info'
         },
         {
-            title: 'Opportunity Cost',
+            title: translations.opportunityCost,
             value: results.opportunityCost,
             icon: 'fas fa-chart-line',
             color: 'secondary'
         },
         {
-            title: 'Total Cost',
+            title: translations.totalCost,
             value: results.totalCost,
             icon: 'fas fa-calculator',
             color: 'danger'
         },
         {
-            title: 'Effective Rate',
+            title: translations.effectiveRate,
             value: results.effectiveRate.toFixed(2) + '%',
             icon: 'fas fa-percentage',
             color: 'success'
@@ -252,7 +268,7 @@ function displayCostAnalysisResults(results) {
     chartDiv.className = 'card mt-3';
     chartDiv.innerHTML = `
         <div class="card-header">
-            <h6 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Cost Breakdown</h6>
+            <h6 class="mb-0"><i class="fas fa-chart-pie me-2"></i>${translations.costBreakdown}</h6>
         </div>
         <div class="card-body">
             <div class="row text-center">
@@ -260,19 +276,19 @@ function displayCostAnalysisResults(results) {
                     <div class="progress mb-2" style="height: 20px;">
                         <div class="progress-bar bg-warning" style="width: ${(results.totalInterest / results.totalCost * 100).toFixed(1)}%"></div>
                     </div>
-                    <small>Interest<br>${(results.totalInterest / results.totalCost * 100).toFixed(1)}%</small>
+                    <small>${translations.interest}<br>${(results.totalInterest / results.totalCost * 100).toFixed(1)}%</small>
                 </div>
                 <div class="col-4">
                     <div class="progress mb-2" style="height: 20px;">
                         <div class="progress-bar bg-info" style="width: ${(results.totalFees / results.totalCost * 100).toFixed(1)}%"></div>
                     </div>
-                    <small>Fees<br>${(results.totalFees / results.totalCost * 100).toFixed(1)}%</small>
+                    <small>${translations.fees}<br>${(results.totalFees / results.totalCost * 100).toFixed(1)}%</small>
                 </div>
                 <div class="col-4">
                     <div class="progress mb-2" style="height: 20px;">
                         <div class="progress-bar bg-secondary" style="width: ${(results.opportunityCost / results.totalCost * 100).toFixed(1)}%"></div>
                     </div>
-                    <small>Opportunity<br>${(results.opportunityCost / results.totalCost * 100).toFixed(1)}%</small>
+                    <small>${translations.opportunity}<br>${(results.opportunityCost / results.totalCost * 100).toFixed(1)}%</small>
                 </div>
             </div>
         </div>
