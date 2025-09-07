@@ -1,0 +1,9 @@
+{
+  "name": "sme-debt-tool-functions",
+  "version": "1.0.0",
+  "description": "Netlify functions for SME Debt Management Tool",
+  "main": "index.js",
+  "dependencies": {
+    "@netlify/functions": "^2.0.0"
+  }
+}
