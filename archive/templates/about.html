@@ -6,13 +6,13 @@
     <title>About - SME Debt Tool</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="/static/css/style.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" href="/">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
                 <i class="fas fa-chart-line me-2"></i>SME Debt Tool
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -21,32 +21,32 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/debt-brake">
+                        <a class="nav-link" href="{{ url_for('debt_brake') }}">
                             <i class="fas fa-shield-alt me-1"></i>Debt Brake
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/cost-analysis">
+                        <a class="nav-link" href="{{ url_for('cost_analysis') }}">
                             <i class="fas fa-calculator me-1"></i>Cost Analysis
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/debt-equity">
+                        <a class="nav-link" href="{{ url_for('debt_equity') }}">
                             <i class="fas fa-exchange-alt me-1"></i>Debt-Equity Swap
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/debt-snowball">
+                        <a class="nav-link" href="{{ url_for('debt_snowball') }}">
                             <i class="fas fa-snowflake me-1"></i>Debt Snowball
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/funding-guidance">
+                        <a class="nav-link" href="{{ url_for('funding_guidance') }}">
                             <i class="fas fa-euro-sign me-1"></i>Funding
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/covenant-tracking">
+                        <a class="nav-link" href="{{ url_for('covenant_tracking') }}">
                             <i class="fas fa-clipboard-check me-1"></i>Covenants
                         </a>
                     </li>
@@ -62,7 +62,7 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="/about">
+                        <a class="nav-link active" href="{{ url_for('about') }}">
                             <i class="fas fa-info-circle me-1"></i>About
                         </a>
                     </li>
@@ -267,6 +267,6 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/static/js/main.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

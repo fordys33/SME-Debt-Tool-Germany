@@ -1,204 +1,335 @@
 {% extends "base.html" %}
 
-{% block title %}{{ _('Covenant Tracking') }} - {{ _('SME Debt Tool') }}{% endblock %}
-
 {% block content %}
 <div class="row">
-    <div class="col-lg-8 mx-auto">
-        <div class="text-center mb-5">
-            <h1 class="display-5 fw-bold text-primary">
-                <i class="fas fa-clipboard-check me-2"></i>{{ _('Debt Covenant Tracking') }}
-            </h1>
-            <p class="lead text-muted">{{ _('Track and monitor debt covenants to maintain compliance') }}</p>
-        </div>
-
-        <!-- Covenant Form -->
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">
-                    <i class="fas fa-plus me-2"></i>{{ _('Add Covenant') }}
-                </h5>
+    <div class="col-12 col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="mb-0">
+                    <i class="fas fa-clipboard-check me-2"></i>{{ _('Debt Covenant Tracking') }}
+                </h2>
             </div>
             <div class="card-body">
+                <p class="text-muted mb-4">{{ _('Monitor compliance with debt agreement covenants and requirements.') }}</p>
+                
                 <form id="covenantForm">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="covenantName" class="form-label">
-                                    <i class="fas fa-tag me-1"></i>{{ _('Covenant Name') }}
-                                </label>
-                                <input type="text" class="form-control" id="covenantName" name="covenantName" 
-                                       placeholder="{{ _('Enter covenant name') }}" required>
-                            </div>
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label for="companyName" class="form-label">{{ _('Company Name') }}</label>
+                            <input type="text" class="form-control" id="companyName" name="companyName" 
+                                   placeholder="Your Company GmbH" required>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="covenantType" class="form-label">
-                                    <i class="fas fa-list me-1"></i>{{ _('Covenant Type') }}
-                                </label>
-                                <select class="form-select" id="covenantType" name="covenantType" required>
-                                    <option value="">{{ _('Select type') }}</option>
-                                    <option value="financial">{{ _('Financial Ratio') }}</option>
-                                    <option value="operational">{{ _('Operational') }}</option>
-                                    <option value="reporting">{{ _('Reporting') }}</option>
-                                    <option value="other">{{ _('Other') }}</option>
-                                </select>
-                            </div>
+                        
+                        <div class="col-12 col-md-6">
+                            <label for="reportingDate" class="form-label">{{ _('Reporting Date') }}</label>
+                            <input type="date" class="form-control" id="reportingDate" name="reportingDate" 
+                                   value="" required>
                         </div>
                     </div>
                     
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="threshold" class="form-label">
-                                    <i class="fas fa-chart-line me-1"></i>{{ _('Threshold Value') }}
-                                </label>
-                                <input type="number" step="0.01" class="form-control" id="threshold" name="threshold" 
-                                       placeholder="{{ _('Enter threshold') }}" required>
-                            </div>
+                    <!-- Financial Metrics -->
+                    <h5 class="mt-4 mb-3">{{ _('Financial Metrics') }}</h5>
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label for="totalDebt" class="form-label">{{ _('Total Debt') }} (€)</label>
+                            <input type="number" class="form-control" id="totalDebt" name="totalDebt" 
+                                   placeholder="500000" min="0" step="1000" required>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="currentValue" class="form-label">
-                                    <i class="fas fa-calculator me-1"></i>{{ _('Current Value') }}
-                                </label>
-                                <input type="number" step="0.01" class="form-control" id="currentValue" name="currentValue" 
-                                       placeholder="{{ _('Enter current value') }}" required>
-                            </div>
+                        
+                        <div class="col-12 col-md-6">
+                            <label for="ebitda" class="form-label">{{ _('EBITDA') }} (€)</label>
+                            <input type="number" class="form-control" id="ebitda" name="ebitda" 
+                                   placeholder="100000" min="0" step="1000" required>
+                        </div>
+                        
+                        <div class="col-12 col-md-6">
+                            <label for="totalAssets" class="form-label">{{ _('Total Assets') }} (€)</label>
+                            <input type="number" class="form-control" id="totalAssets" name="totalAssets" 
+                                   placeholder="1000000" min="0" step="1000" required>
+                        </div>
+                        
+                        <div class="col-12 col-md-6">
+                            <label for="cashFlow" class="form-label">{{ _('Operating Cash Flow') }} (€)</label>
+                            <input type="number" class="form-control" id="cashFlow" name="cashFlow" 
+                                   placeholder="80000" min="0" step="1000" required>
                         </div>
                     </div>
                     
-                    <div class="mb-3">
-                        <label for="description" class="form-label">
-                            <i class="fas fa-align-left me-1"></i>{{ _('Description') }}
-                        </label>
-                        <textarea class="form-control" id="description" name="description" rows="3" 
-                                  placeholder="{{ _('Enter covenant description') }}"></textarea>
+                    <!-- Covenant Requirements -->
+                    <h5 class="mt-4 mb-3">{{ _('Covenant Requirements') }}</h5>
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label for="maxDebtToEbitda" class="form-label">{{ _('Max Debt-to-EBITDA Ratio') }}</label>
+                            <input type="number" class="form-control" id="maxDebtToEbitda" name="maxDebtToEbitda" 
+                                   placeholder="3.5" min="0" max="10" step="0.1" value="3.5">
+                        </div>
+                        
+                        <div class="col-12 col-md-6">
+                            <label for="minInterestCoverage" class="form-label">{{ _('Min Interest Coverage Ratio') }}</label>
+                            <input type="number" class="form-control" id="minInterestCoverage" name="minInterestCoverage" 
+                                   placeholder="2.5" min="0" max="10" step="0.1" value="2.5">
+                        </div>
+                        
+                        <div class="col-12 col-md-6">
+                            <label for="maxDebtToAssets" class="form-label">{{ _('Max Debt-to-Assets Ratio') }}</label>
+                            <input type="number" class="form-control" id="maxDebtToAssets" name="maxDebtToAssets" 
+                                   placeholder="0.6" min="0" max="1" step="0.05" value="0.6">
+                        </div>
+                        
+                        <div class="col-12 col-md-6">
+                            <label for="minCashFlowCoverage" class="form-label">{{ _('Min Cash Flow Coverage') }}</label>
+                            <input type="number" class="form-control" id="minCashFlowCoverage" name="minCashFlowCoverage" 
+                                   placeholder="1.2" min="0" max="5" step="0.1" value="1.2">
+                        </div>
                     </div>
                     
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="fas fa-plus me-2"></i>{{ _('Add Covenant') }}
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <button type="button" class="btn btn-outline-secondary" onclick="resetForm()">
+                            <i class="fas fa-undo me-2"></i>{{ _('Reset') }}
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="calculateCovenants()">
+                            <i class="fas fa-clipboard-check me-2"></i>{{ _('Check Compliance') }}
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
-
-        <!-- Covenant List -->
-        <div class="card shadow mt-4">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0">
-                    <i class="fas fa-list me-2"></i>{{ _('Covenant Dashboard') }}
-                </h5>
-            </div>
-            <div class="card-body">
-                <div id="covenantList">
-                    <p class="text-muted text-center">{{ _('No covenants added yet. Add your first covenant above.') }}</p>
+                
+                <!-- Results Section -->
+                <div id="results" class="mt-4" style="display: none;">
+                    <hr>
+                    <h4 class="mb-3">
+                        <i class="fas fa-chart-line me-2"></i>{{ _('Compliance Report') }}
+                    </h4>
+                    <div id="resultsContent"></div>
                 </div>
             </div>
         </div>
-
-        <!-- Information Panel -->
-        <div class="card shadow mt-4">
-            <div class="card-header bg-light">
-                <h5 class="mb-0">
-                    <i class="fas fa-info-circle me-2"></i>{{ _('About Debt Covenants') }}
-                </h5>
+    </div>
+    
+    <div class="col-12 col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>{{ _('Common Covenants') }}
+                </h4>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6><i class="fas fa-clipboard-check text-primary me-1"></i>{{ _('What are Covenants?') }}</h6>
-                        <p class="small">{{ _('Debt covenants are agreements between borrowers and lenders that specify certain conditions and restrictions.') }}</p>
-                        
-                        <h6><i class="fas fa-chart-line text-success me-1"></i>{{ _('Common Types') }}</h6>
-                        <ul class="small">
-                            <li>{{ _('Debt-to-equity ratio limits') }}</li>
-                            <li>{{ _('Interest coverage ratios') }}</li>
-                            <li>{{ _('Working capital requirements') }}</li>
-                            <li>{{ _('Cash flow covenants') }}</li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <h6><i class="fas fa-exclamation-triangle text-warning me-1"></i>{{ _('Why Monitor?') }}</h6>
-                        <ul class="small">
-                            <li>{{ _('Prevents covenant breaches') }}</li>
-                            <li>{{ _('Maintains lender relationships') }}</li>
-                            <li>{{ _('Avoids penalties') }}</li>
-                            <li>{{ _('Ensures compliance') }}</li>
-                        </ul>
-                        
-                        <h6><i class="fas fa-lightbulb text-info me-1"></i>{{ _('Important Note') }}</h6>
-                        <p class="small">{{ _('This tool helps track covenants but does not replace professional legal or financial advice.') }}</p>
-                    </div>
+                <div class="mb-3">
+                    <h6><i class="fas fa-percentage text-primary me-2"></i>{{ _('Debt-to-EBITDA Ratio') }}</h6>
+                    <p class="small text-muted">{{ _('Measures debt relative to earnings before interest, taxes, depreciation, and amortization') }}</p>
                 </div>
+                
+                <div class="mb-3">
+                    <h6><i class="fas fa-shield-alt text-success me-2"></i>{{ _('Interest Coverage Ratio') }}</h6>
+                    <p class="small text-muted">{{ _('Measures ability to pay interest expenses from operating income') }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <h6><i class="fas fa-balance-scale text-warning me-2"></i>{{ _('Debt-to-Assets Ratio') }}</h6>
+                    <p class="small text-muted">{{ _('Measures percentage of assets financed by debt') }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <h6><i class="fas fa-euro-sign text-info me-2"></i>{{ _('Cash Flow Coverage') }}</h6>
+                    <p class="small text-muted">{{ _('Measures ability to service debt from operating cash flow') }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>{{ _('Compliance Tips') }}
+                </h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled small">
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        {{ _('Monitor ratios regularly') }}
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        {{ _('Maintain adequate cash reserves') }}
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        {{ _('Plan for seasonal variations') }}
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        {{ _('Communicate with lenders early') }}
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        {{ _('Consider covenant amendments if needed') }}
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    let covenants = [];
-
-    document.getElementById('covenantForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        const formData = new FormData(this);
-        const covenant = {
-            name: formData.get('covenantName'),
-            type: formData.get('covenantType'),
-            threshold: parseFloat(formData.get('threshold')),
-            currentValue: parseFloat(formData.get('currentValue')),
-            description: formData.get('description')
-        };
-        
-        covenants.push(covenant);
-        updateCovenantList();
-        
-        // Clear form
-        this.reset();
-        
-        try {
-            const response = await fetch('/api/covenant-tracking', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(covenant)
-            });
-            
-            const result = await response.json();
-            console.log('Covenant saved:', result);
-        } catch (error) {
-            console.error('Error:', error);
-            alert('{{ _("An error occurred. Please try again.") }}');
+function calculateCovenants() {
+    const totalDebt = parseFloat(document.getElementById('totalDebt').value);
+    const ebitda = parseFloat(document.getElementById('ebitda').value);
+    const totalAssets = parseFloat(document.getElementById('totalAssets').value);
+    const cashFlow = parseFloat(document.getElementById('cashFlow').value);
+    
+    const maxDebtToEbitda = parseFloat(document.getElementById('maxDebtToEbitda').value);
+    const minInterestCoverage = parseFloat(document.getElementById('minInterestCoverage').value);
+    const maxDebtToAssets = parseFloat(document.getElementById('maxDebtToAssets').value);
+    const minCashFlowCoverage = parseFloat(document.getElementById('minCashFlowCoverage').value);
+    
+    if (!totalDebt || !ebitda || !totalAssets || !cashFlow) {
+        showMobileError('Please fill in all required financial metrics.');
+        return;
+    }
+    
+    // Calculate ratios
+    const debtToEbitda = totalDebt / ebitda;
+    const interestCoverage = ebitda / (totalDebt * 0.05); // Assuming 5% average interest rate
+    const debtToAssets = totalDebt / totalAssets;
+    const cashFlowCoverage = cashFlow / (totalDebt * 0.05); // Assuming 5% average interest rate
+    
+    // Check compliance
+    const compliance = {
+        debtToEbitda: {
+            value: debtToEbitda,
+            limit: maxDebtToEbitda,
+            compliant: debtToEbitda <= maxDebtToEbitda
+        },
+        interestCoverage: {
+            value: interestCoverage,
+            limit: minInterestCoverage,
+            compliant: interestCoverage >= minInterestCoverage
+        },
+        debtToAssets: {
+            value: debtToAssets,
+            limit: maxDebtToAssets,
+            compliant: debtToAssets <= maxDebtToAssets
+        },
+        cashFlowCoverage: {
+            value: cashFlowCoverage,
+            limit: minCashFlowCoverage,
+            compliant: cashFlowCoverage >= minCashFlowCoverage
         }
+    };
+    
+    displayCovenantResults(compliance);
+}
+
+function displayCovenantResults(compliance) {
+    const resultsDiv = document.getElementById('results');
+    const resultsContent = document.getElementById('resultsContent');
+    
+    if (!resultsDiv || !resultsContent) return;
+    
+    // Clear previous results
+    resultsContent.innerHTML = '';
+    
+    // Overall compliance status
+    const allCompliant = Object.values(compliance).every(c => c.compliant);
+    const statusCard = document.createElement('div');
+    statusCard.className = `card mb-4 ${allCompliant ? 'border-success' : 'border-warning'}`;
+    statusCard.innerHTML = `
+        <div class="card-header ${allCompliant ? 'bg-success text-white' : 'bg-warning text-dark'}">
+            <h5 class="mb-0">
+                <i class="fas fa-${allCompliant ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+                ${allCompliant ? 'All Covenants Compliant' : 'Covenant Violations Detected'}
+            </h5>
+        </div>
+        <div class="card-body">
+            <p class="mb-0">
+                ${allCompliant ? 
+                    'Your company is in compliance with all debt covenants.' : 
+                    'Some covenants are not being met. Review the details below.'
+                }
+            </p>
+        </div>
+    `;
+    resultsContent.appendChild(statusCard);
+    
+    // Individual covenant results
+    const covenantNames = {
+        debtToEbitda: 'Debt-to-EBITDA Ratio',
+        interestCoverage: 'Interest Coverage Ratio',
+        debtToAssets: 'Debt-to-Assets Ratio',
+        cashFlowCoverage: 'Cash Flow Coverage'
+    };
+    
+    Object.entries(compliance).forEach(([key, covenant]) => {
+        const covenantCard = document.createElement('div');
+        covenantCard.className = 'card mb-3';
+        covenantCard.innerHTML = `
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="card-title mb-0">${covenantNames[key]}</h6>
+                    <span class="badge ${covenant.compliant ? 'bg-success' : 'bg-danger'}">
+                        ${covenant.compliant ? 'Compliant' : 'Violation'}
+                    </span>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <strong>Current:</strong><br>
+                        <span class="text-${covenant.compliant ? 'success' : 'danger'}">${covenant.value.toFixed(2)}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Limit:</strong><br>
+                        <span class="text-muted">${covenant.limit}</span>
+                    </div>
+                </div>
+                ${!covenant.compliant ? `
+                    <div class="alert alert-warning mt-2 mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Action Required:</strong> ${getCovenantAdvice(key, covenant)}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+        resultsContent.appendChild(covenantCard);
     });
     
-    function updateCovenantList() {
-        const covenantList = document.getElementById('covenantList');
-        
-        if (covenants.length === 0) {
-            covenantList.innerHTML = '<p class="text-muted text-center">{{ _("No covenants added yet. Add your first covenant above.") }}</p>';
-            return;
+    // Show results with animation
+    resultsDiv.style.display = 'block';
+    resultsDiv.classList.add('animate-fade-in-up');
+    
+    // Scroll to results
+    resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function getCovenantAdvice(key, covenant) {
+    const advice = {
+        debtToEbitda: 'Consider reducing debt or increasing EBITDA through operational improvements.',
+        interestCoverage: 'Focus on increasing operating income or reducing interest expenses.',
+        debtToAssets: 'Consider reducing debt or increasing asset base through investments.',
+        cashFlowCoverage: 'Improve operating cash flow or consider debt restructuring.'
+    };
+    return advice[key] || 'Review financial performance and consider corrective actions.';
+}
+
+function resetForm() {
+    document.getElementById('covenantForm').reset();
+    document.getElementById('results').style.display = 'none';
+}
+
+function formatNumber(value) {
+    if (typeof value === 'number') {
+        if (value >= 1000000) {
+            return '€' + (value / 1000000).toFixed(1) + 'M';
+        } else if (value >= 1000) {
+            return '€' + (value / 1000).toFixed(1) + 'K';
+        } else {
+            return '€' + value.toFixed(2);
         }
-        
-        covenantList.innerHTML = '<div class="table-responsive"><table class="table table-striped"><thead><tr><th>{{ _("Covenant") }}</th><th>{{ _("Type") }}</th><th>{{ _("Threshold") }}</th><th>{{ _("Current") }}</th><th>{{ _("Status") }}</th></tr></thead><tbody></tbody></table></div>';
-        
-        const tbody = covenantList.querySelector('tbody');
-        covenants.forEach(covenant => {
-            const row = tbody.insertRow();
-            const status = covenant.currentValue <= covenant.threshold ? 
-                '<span class="badge bg-success">{{ _("Compliant") }}</span>' : 
-                '<span class="badge bg-danger">{{ _("Breach") }}</span>';
-            
-            row.insertCell(0).textContent = covenant.name;
-            row.insertCell(1).textContent = covenant.type;
-            row.insertCell(2).textContent = covenant.threshold;
-            row.insertCell(3).textContent = covenant.currentValue;
-            row.insertCell(4).innerHTML = status;
-        });
     }
+    return value;
+}
+
+// Set current date on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('reportingDate').value = today;
+});
 </script>
 {% endblock %}

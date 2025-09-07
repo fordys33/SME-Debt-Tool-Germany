@@ -1,199 +1,375 @@
 {% extends "base.html" %}
 
-{% block title %}{{ _('Debt Snowball') }} - {{ _('SME Debt Tool') }}{% endblock %}
-
 {% block content %}
 <div class="row">
-    <div class="col-lg-8 mx-auto">
-        <div class="text-center mb-5">
-            <h1 class="display-5 fw-bold text-primary">
-                <i class="fas fa-snowflake me-2"></i>{{ _('Debt Snowball Prioritization') }}
-            </h1>
-            <p class="lead text-muted">{{ _('Prioritize debt repayment using the snowball method for faster debt elimination') }}</p>
-        </div>
-
-        <!-- Calculator Form -->
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">
-                    <i class="fas fa-calculator me-2"></i>{{ _('Debt Snowball Calculator') }}
-                </h5>
+    <div class="col-12 col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="mb-0">
+                    <i class="fas fa-snowflake me-2"></i>{{ _('Debt Snowball Prioritization') }}
+                </h2>
             </div>
             <div class="card-body">
+                <p class="text-muted mb-4">{{ _('Optimize your debt repayment strategy using the snowball method.') }}</p>
+                
                 <form id="debtSnowballForm">
-                    <div class="mb-3">
-                        <label for="monthlyPayment" class="form-label">
-                            <i class="fas fa-euro-sign me-1"></i>{{ _('Monthly Payment Capacity (€)') }}
-                        </label>
-                        <input type="number" class="form-control" id="monthlyPayment" name="monthlyPayment" 
-                               placeholder="{{ _('Enter monthly payment capacity') }}" required>
-                        <div class="form-text">{{ _('Total amount you can pay towards debt monthly') }}</div>
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label for="monthlyPayment" class="form-label">{{ _('Total Monthly Payment') }} (€)</label>
+                            <input type="number" class="form-control" id="monthlyPayment" name="monthlyPayment" 
+                                   placeholder="2000" min="0" step="100" required>
+                            <div class="form-text">{{ _('Total amount available for debt payments') }}</div>
+                        </div>
+                        
+                        <div class="col-12 col-md-6">
+                            <label for="strategy" class="form-label">{{ _('Repayment Strategy') }}</label>
+                            <select class="form-select" id="strategy" name="strategy">
+                                <option value="snowball">{{ _('Snowball (Smallest Balance First)') }}</option>
+                                <option value="avalanche">{{ _('Avalanche (Highest Interest First)') }}</option>
+                            </select>
+                            <div class="form-text">{{ _('Choose your repayment strategy') }}</div>
+                        </div>
                     </div>
                     
-                    <div class="mb-3">
-                        <h6>{{ _('Add Your Debts') }}</h6>
-                        <div id="debtList">
-                            <div class="debt-item mb-3 p-3 border rounded">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label class="form-label">{{ _('Debt Name') }}</label>
-                                        <input type="text" class="form-control" name="debtName" placeholder="{{ _('e.g., Credit Card') }}">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label">{{ _('Balance (€)') }}</label>
-                                        <input type="number" class="form-control" name="debtBalance" placeholder="{{ _('Enter balance') }}">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label">{{ _('Interest Rate (%)') }}</label>
-                                        <input type="number" step="0.01" class="form-control" name="debtRate" placeholder="{{ _('Enter rate') }}">
-                                    </div>
+                    <!-- Debt Entries -->
+                    <div id="debtEntries" class="mt-4">
+                        <h5 class="mb-3">{{ _('Debt Accounts') }}</h5>
+                        <div class="debt-entry">
+                            <div class="row g-3">
+                                <div class="col-12 col-md-4">
+                                    <label class="form-label">{{ _('Debt Name') }}</label>
+                                    <input type="text" class="form-control debt-name" placeholder="Credit Card" required>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <label class="form-label">{{ _('Balance') }} (€)</label>
+                                    <input type="number" class="form-control debt-balance" placeholder="5000" min="0" step="100" required>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <label class="form-label">{{ _('Interest Rate') }} (%)</label>
+                                    <input type="number" class="form-control debt-rate" placeholder="18" min="0" max="50" step="0.1" required>
                                 </div>
                             </div>
                         </div>
-                        <button type="button" class="btn btn-outline-primary" onclick="addDebt()">
-                            <i class="fas fa-plus me-1"></i>{{ _('Add Another Debt') }}
+                    </div>
+                    
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="button" class="btn btn-outline-primary" onclick="addDebtEntry()">
+                            <i class="fas fa-plus me-2"></i>{{ _('Add Debt') }}
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" onclick="removeDebtEntry()">
+                            <i class="fas fa-minus me-2"></i>{{ _('Remove Debt') }}
                         </button>
                     </div>
                     
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="fas fa-calculator me-2"></i>{{ _('Calculate Snowball Plan') }}
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                        <button type="button" class="btn btn-outline-secondary" onclick="resetForm()">
+                            <i class="fas fa-undo me-2"></i>{{ _('Reset') }}
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="calculateSnowball()">
+                            <i class="fas fa-snowflake me-2"></i>{{ _('Calculate') }}
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
-
-        <!-- Results -->
-        <div id="results" class="card shadow mt-4" style="display: none;">
-            <div class="card-header bg-success text-white">
-                <h5 class="mb-0">
-                    <i class="fas fa-chart-line me-2"></i>{{ _('Debt Snowball Plan') }}
-                </h5>
-            </div>
-            <div class="card-body">
-                <div id="snowballResults"></div>
-            </div>
-        </div>
-
-        <!-- Information Panel -->
-        <div class="card shadow mt-4">
-            <div class="card-header bg-light">
-                <h5 class="mb-0">
-                    <i class="fas fa-info-circle me-2"></i>{{ _('About the Debt Snowball Method') }}
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6><i class="fas fa-snowflake text-primary me-1"></i>{{ _('How It Works') }}</h6>
-                        <p class="small">{{ _('The debt snowball method prioritizes paying off debts from smallest to largest balance, regardless of interest rate.') }}</p>
-                        
-                        <h6><i class="fas fa-lightbulb text-success me-1"></i>{{ _('Benefits') }}</h6>
-                        <ul class="small">
-                            <li>{{ _('Provides psychological motivation') }}</li>
-                            <li>{{ _('Simplifies debt management') }}</li>
-                            <li>{{ _('Creates momentum') }}</li>
-                            <li>{{ _('Reduces number of debts quickly') }}</li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <h6><i class="fas fa-exclamation-triangle text-warning me-1"></i>{{ _('Considerations') }}</h6>
-                        <ul class="small">
-                            <li>{{ _('May not minimize total interest') }}</li>
-                            <li>{{ _('Higher interest debts may take longer') }}</li>
-                            <li>{{ _('Requires discipline') }}</li>
-                            <li>{{ _('May not suit all situations') }}</li>
-                        </ul>
-                        
-                        <h6><i class="fas fa-lightbulb text-info me-1"></i>{{ _('Important Note') }}</h6>
-                        <p class="small">{{ _('This tool provides estimates. Consider your specific financial situation and consult professionals if needed.') }}</p>
-                    </div>
+                
+                <!-- Results Section -->
+                <div id="results" class="mt-4" style="display: none;">
+                    <hr>
+                    <h4 class="mb-3">
+                        <i class="fas fa-chart-line me-2"></i>{{ _('Repayment Plan') }}
+                    </h4>
+                    <div id="resultsContent"></div>
                 </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-12 col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>{{ _('Strategies') }}
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <h6><i class="fas fa-snowflake text-primary me-2"></i>{{ _('Snowball Method') }}</h6>
+                    <p class="small text-muted">{{ _('Pay off debts from smallest to largest balance. Provides psychological motivation.') }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <h6><i class="fas fa-mountain text-success me-2"></i>{{ _('Avalanche Method') }}</h6>
+                    <p class="small text-muted">{{ _('Pay off debts from highest to lowest interest rate. Saves more money in interest.') }}</p>
+                </div>
+                
+                <div class="alert alert-info mt-3">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    <strong>{{ _('Tip:') }}</strong> {{ _('Choose the method that motivates you to stick with the plan.') }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-4">
+            <div class="card-header">
+                <h4 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>{{ _('Benefits') }}
+                </h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled small">
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        {{ _('Reduces total interest paid') }}
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        {{ _('Provides clear payoff timeline') }}
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        {{ _('Builds momentum') }}
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        {{ _('Improves credit score') }}
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    function addDebt() {
-        const debtList = document.getElementById('debtList');
-        const newDebt = document.createElement('div');
-        newDebt.className = 'debt-item mb-3 p-3 border rounded';
-        newDebt.innerHTML = `
-            <div class="row">
-                <div class="col-md-4">
-                    <label class="form-label">{{ _('Debt Name') }}</label>
-                    <input type="text" class="form-control" name="debtName" placeholder="{{ _('e.g., Credit Card') }}">
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">{{ _('Balance (€)') }}</label>
-                    <input type="number" class="form-control" name="debtBalance" placeholder="{{ _('Enter balance') }}">
-                </div>
-                <div class="col-md-4">
-                    <label class="form-label">{{ _('Interest Rate (%)') }}</label>
-                    <input type="number" step="0.01" class="form-control" name="debtRate" placeholder="{{ _('Enter rate') }}">
-                </div>
-            </div>
-        `;
-        debtList.appendChild(newDebt);
-    }
+let debtCount = 1;
 
-    document.getElementById('debtSnowballForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
+function addDebtEntry() {
+    debtCount++;
+    const debtEntries = document.getElementById('debtEntries');
+    const newEntry = document.createElement('div');
+    newEntry.className = 'debt-entry mt-3';
+    newEntry.innerHTML = `
+        <div class="row g-3">
+            <div class="col-12 col-md-4">
+                <label class="form-label">${_('Debt Name')}</label>
+                <input type="text" class="form-control debt-name" placeholder="Credit Card" required>
+            </div>
+            <div class="col-12 col-md-4">
+                <label class="form-label">${_('Balance')} (€)</label>
+                <input type="number" class="form-control debt-balance" placeholder="5000" min="0" step="100" required>
+            </div>
+            <div class="col-12 col-md-4">
+                <label class="form-label">${_('Interest Rate')} (%)</label>
+                <input type="number" class="form-control debt-rate" placeholder="18" min="0" max="50" step="0.1" required>
+            </div>
+        </div>
+    `;
+    debtEntries.appendChild(newEntry);
+}
+
+function removeDebtEntry() {
+    const debtEntries = document.getElementById('debtEntries');
+    const entries = debtEntries.querySelectorAll('.debt-entry');
+    if (entries.length > 1) {
+        entries[entries.length - 1].remove();
+        debtCount--;
+    }
+}
+
+function calculateSnowball() {
+    const monthlyPayment = parseFloat(document.getElementById('monthlyPayment').value);
+    const strategy = document.getElementById('strategy').value;
+    
+    if (!monthlyPayment) {
+        showMobileError('Please enter your monthly payment amount.');
+        return;
+    }
+    
+    const debts = [];
+    const debtEntries = document.querySelectorAll('.debt-entry');
+    
+    debtEntries.forEach(entry => {
+        const name = entry.querySelector('.debt-name').value;
+        const balance = parseFloat(entry.querySelector('.debt-balance').value);
+        const rate = parseFloat(entry.querySelector('.debt-rate').value);
         
-        const formData = new FormData(this);
-        const monthlyPayment = parseFloat(formData.get('monthlyPayment'));
-        
-        const debts = [];
-        const debtItems = document.querySelectorAll('.debt-item');
-        
-        debtItems.forEach(item => {
-            const name = item.querySelector('input[name="debtName"]').value;
-            const balance = parseFloat(item.querySelector('input[name="debtBalance"]').value);
-            const rate = parseFloat(item.querySelector('input[name="debtRate"]').value);
-            
-            if (name && balance && rate) {
-                debts.push({ name, balance, rate });
-            }
-        });
-        
-        const data = {
-            monthlyPayment: monthlyPayment,
-            debts: debts
-        };
-        
-        try {
-            const response = await fetch('/api/debt-snowball', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data)
-            });
-            
-            const result = await response.json();
-            displayResults(result);
-        } catch (error) {
-            console.error('Error:', error);
-            alert('{{ _("An error occurred. Please try again.") }}');
+        if (name && balance && rate !== undefined) {
+            debts.push({ name, balance, rate, originalBalance: balance });
         }
     });
     
-    function displayResults(result) {
-        const resultsDiv = document.getElementById('snowballResults');
-        resultsDiv.innerHTML = '<h6>{{ _("Debt Payoff Schedule") }}</h6><div class="table-responsive"><table class="table table-striped"><thead><tr><th>{{ _("Debt") }}</th><th>{{ _("Balance") }}</th><th>{{ _("Monthly Payment") }}</th><th>{{ _("Months to Payoff") }}</th></tr></thead><tbody></tbody></table></div>';
+    if (debts.length === 0) {
+        showMobileError('Please add at least one debt account.');
+        return;
+    }
+    
+    // Sort debts based on strategy
+    if (strategy === 'snowball') {
+        debts.sort((a, b) => a.balance - b.balance);
+    } else {
+        debts.sort((a, b) => b.rate - a.rate);
+    }
+    
+    const results = calculateRepaymentPlan(debts, monthlyPayment);
+    displaySnowballResults(results, strategy);
+}
+
+function calculateRepaymentPlan(debts, monthlyPayment) {
+    const plan = [];
+    let totalInterest = 0;
+    let totalMonths = 0;
+    
+    debts.forEach((debt, index) => {
+        let remainingBalance = debt.balance;
+        let monthlyRate = debt.rate / 100 / 12;
+        let months = 0;
+        let interest = 0;
         
-        const tbody = resultsDiv.querySelector('tbody');
-        result.payoffSchedule.forEach(debt => {
-            const row = tbody.insertRow();
-            row.insertCell(0).textContent = debt.name;
-            row.insertCell(1).textContent = '€' + debt.balance.toLocaleString();
-            row.insertCell(2).textContent = '€' + debt.monthlyPayment.toLocaleString();
-            row.insertCell(3).textContent = debt.monthsToPayoff;
+        while (remainingBalance > 0.01 && months < 600) { // Max 50 years
+            let payment = monthlyPayment;
+            
+            // For subsequent debts, use freed-up payment from previous debts
+            if (index > 0) {
+                payment += plan[index - 1].monthlyPayment;
+            }
+            
+            let interestPayment = remainingBalance * monthlyRate;
+            let principalPayment = Math.min(payment - interestPayment, remainingBalance);
+            
+            if (principalPayment <= 0) {
+                break; // Can't make progress
+            }
+            
+            remainingBalance -= principalPayment;
+            interest += interestPayment;
+            months++;
+        }
+        
+        plan.push({
+            name: debt.name,
+            originalBalance: debt.originalBalance,
+            monthlyPayment: monthlyPayment,
+            months: months,
+            interest: interest,
+            totalPaid: debt.originalBalance + interest
         });
         
-        document.getElementById('results').style.display = 'block';
+        totalInterest += interest;
+        totalMonths = Math.max(totalMonths, months);
+    });
+    
+    return {
+        plan: plan,
+        totalInterest: totalInterest,
+        totalMonths: totalMonths,
+        totalDebt: debts.reduce((sum, debt) => sum + debt.originalBalance, 0)
+    };
+}
+
+function displaySnowballResults(results, strategy) {
+    const resultsDiv = document.getElementById('results');
+    const resultsContent = document.getElementById('resultsContent');
+    
+    if (!resultsDiv || !resultsContent) return;
+    
+    // Clear previous results
+    resultsContent.innerHTML = '';
+    
+    // Summary card
+    const summaryCard = document.createElement('div');
+    summaryCard.className = 'card mb-4';
+    summaryCard.innerHTML = `
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Summary</h5>
+        </div>
+        <div class="card-body">
+            <div class="row text-center">
+                <div class="col-6 col-md-3">
+                    <h6 class="text-primary">${formatNumber(results.totalDebt)}</h6>
+                    <small>Total Debt</small>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h6 class="text-warning">${formatNumber(results.totalInterest)}</h6>
+                    <small>Total Interest</small>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h6 class="text-info">${results.totalMonths}</h6>
+                    <small>Months to Payoff</small>
+                </div>
+                <div class="col-6 col-md-3">
+                    <h6 class="text-success">${formatNumber(results.totalDebt + results.totalInterest)}</h6>
+                    <small>Total Paid</small>
+                </div>
+            </div>
+        </div>
+    `;
+    resultsContent.appendChild(summaryCard);
+    
+    // Individual debt plans
+    results.plan.forEach((debt, index) => {
+        const debtCard = document.createElement('div');
+        debtCard.className = 'card mb-3';
+        debtCard.innerHTML = `
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="fas fa-credit-card me-2"></i>${debt.name}
+                    <span class="badge bg-primary ms-2">${index + 1}</span>
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6 col-md-3">
+                        <h6 class="text-primary">${formatNumber(debt.originalBalance)}</h6>
+                        <small>Original Balance</small>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <h6 class="text-warning">${formatNumber(debt.interest)}</h6>
+                        <small>Interest</small>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <h6 class="text-info">${debt.months}</h6>
+                        <small>Months</small>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <h6 class="text-success">${formatNumber(debt.totalPaid)}</h6>
+                        <small>Total Paid</small>
+                    </div>
+                </div>
+            </div>
+        `;
+        resultsContent.appendChild(debtCard);
+    });
+    
+    // Show results with animation
+    resultsDiv.style.display = 'block';
+    resultsDiv.classList.add('animate-fade-in-up');
+    
+    // Scroll to results
+    resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function resetForm() {
+    document.getElementById('debtSnowballForm').reset();
+    document.getElementById('results').style.display = 'none';
+    
+    // Reset to single debt entry
+    const debtEntries = document.getElementById('debtEntries');
+    const entries = debtEntries.querySelectorAll('.debt-entry');
+    for (let i = 1; i < entries.length; i++) {
+        entries[i].remove();
     }
+    debtCount = 1;
+}
+
+function formatNumber(value) {
+    if (typeof value === 'number') {
+        if (value >= 1000000) {
+            return '€' + (value / 1000000).toFixed(1) + 'M';
+        } else if (value >= 1000) {
+            return '€' + (value / 1000).toFixed(1) + 'K';
+        } else {
+            return '€' + value.toFixed(2);
+        }
+    }
+    return value;
+}
 </script>
 {% endblock %}

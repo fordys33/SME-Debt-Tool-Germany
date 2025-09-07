@@ -1,201 +1,200 @@
 {% extends "base.html" %}
 
-{% block title %}{{ _('Support Development') }} - {{ _('SME Debt Tool') }}{% endblock %}
-
 {% block content %}
 <div class="row">
-    <div class="col-lg-8 mx-auto">
-        <div class="text-center mb-5">
-            <h1 class="display-5 fw-bold text-primary">
-                <i class="fas fa-heart me-2"></i>{{ _('Support Development') }}
-            </h1>
-            <p class="lead text-muted">{{ _('Help continue building tools for German SMEs') }}</p>
-        </div>
-
-        <!-- Mission Statement -->
-        <div class="card shadow mb-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0">
-                    <i class="fas fa-flag-usa me-2"></i>{{ _('A Friendly American Initiative') }}
-                </h5>
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="mb-0">
+                    <i class="fas fa-heart me-2"></i>{{ _('Support Development') }}
+                </h2>
             </div>
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-8">
-                        <p class="mb-3">{{ _('As a friendly American citizen, I believe in building bridges between nations through technology and innovation. This SME Debt Management Tool represents a bipartisan effort to support German small and medium enterprises with practical, free-to-use financial tools.') }}</p>
-                        <p class="mb-3">{{ _('Your support helps me continue developing tools that benefit German businesses, strengthen economic ties, and demonstrate the positive impact of international cooperation.') }}</p>
-                        <div class="alert alert-info">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <strong>{{ _('100% Transparent:') }}</strong> {{ _('All donations go directly toward development costs, hosting, and creating new tools for German SMEs.') }}
+                <div class="text-center mb-4">
+                    <h3 class="mb-3">{{ _('Help us continue building tools for Germany') }}</h3>
+                    <p class="lead">{{ _('Your friendly American citizen building bipartisan tools for Germany') }}</p>
+                </div>
+                
+                <!-- Impact Metrics -->
+                <div class="row g-4 mb-5">
+                    <div class="col-12 col-md-4">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <div class="feature-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <h5 class="card-title">{{ _('Users Helped') }}</h5>
+                                <p class="card-text h3 text-primary">500+</p>
+                                <p class="small text-muted">{{ _('German SMEs using our tools') }}</p>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-4 text-center">
-                        <div class="mb-3">
-                            <i class="fas fa-tools fa-3x text-primary mb-2"></i>
-                            <h6>{{ _('Development Costs') }}</h6>
-                            <small class="text-muted">{{ _('Hosting, domains, tools') }}</small>
+                    
+                    <div class="col-12 col-md-4">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <div class="feature-icon">
+                                    <i class="fas fa-calculator"></i>
+                                </div>
+                                <h5 class="card-title">{{ _('Calculations Made') }}</h5>
+                                <p class="card-text h3 text-success">2,500+</p>
+                                <p class="small text-muted">{{ _('Financial calculations completed') }}</p>
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <i class="fas fa-language fa-3x text-success mb-2"></i>
-                            <h6>{{ _('Translation Work') }}</h6>
-                            <small class="text-muted">{{ _('Professional German translations') }}</small>
-                        </div>
-                        <div class="mb-3">
-                            <i class="fas fa-plus-circle fa-3x text-warning mb-2"></i>
-                            <h6>{{ _('New Features') }}</h6>
-                            <small class="text-muted">{{ _('Additional tools for SMEs') }}</small>
+                    </div>
+                    
+                    <div class="col-12 col-md-4">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <div class="feature-icon">
+                                    <i class="fas fa-euro-sign"></i>
+                                </div>
+                                <h5 class="card-title">{{ _('Debt Analyzed') }}</h5>
+                                <p class="card-text h3 text-warning">€50M+</p>
+                                <p class="small text-muted">{{ _('Total debt analyzed') }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Donation Options -->
-        <div class="row">
-            <div class="col-md-6">
-                <div class="card shadow h-100">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="mb-0">
-                            <i class="fas fa-coffee me-2"></i>{{ _('Buy Me a Coffee') }}
-                        </h5>
+                
+                <!-- Donation Options -->
+                <div class="row g-4">
+                    <div class="col-12 col-lg-6">
+                        <div class="card h-100">
+                            <div class="card-header text-center">
+                                <h4 class="mb-0">
+                                    <i class="fas fa-coffee me-2"></i>{{ _('Buy Me a Coffee') }}
+                                </h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <p class="mb-4">{{ _('Support ongoing development with a small contribution') }}</p>
+                                <a href="https://buymeacoffee.com/toolsforcommunity" target="_blank" class="btn btn-warning btn-lg">
+                                    <i class="fas fa-coffee me-2"></i>{{ _('Buy Me a Coffee') }}
+                                </a>
+                                <p class="small text-muted mt-3">{{ _('Quick and easy way to show your support') }}</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body d-flex flex-column">
-                        <p class="mb-3">{{ _('Support ongoing development with a small contribution. Every coffee helps fuel the next feature!') }}</p>
-                        <div class="mt-auto">
-                            <a href="https://buymeacoffee.com/toolsforcommunity" target="_blank" class="btn btn-success btn-lg w-100">
-                                <i class="fas fa-coffee me-2"></i>{{ _('Buy Coffee') }} ☕
-                            </a>
+                    
+                    <div class="col-12 col-lg-6">
+                        <div class="card h-100">
+                            <div class="card-header text-center">
+                                <h4 class="mb-0">
+                                    <i class="fab fa-paypal me-2"></i>{{ _('PayPal Donation') }}
+                                </h4>
+                            </div>
+                            <div class="card-body text-center">
+                                <p class="mb-4">{{ _('Make a direct donation via PayPal') }}</p>
+                                <a href="https://paypal.me/Fordys54" target="_blank" class="btn btn-primary btn-lg">
+                                    <i class="fab fa-paypal me-2"></i>{{ _('Donate via PayPal') }}
+                                </a>
+                                <p class="small text-muted mt-3">{{ _('Secure and trusted payment method') }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="card shadow h-100">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0">
-                            <i class="fas fa-paypal me-2"></i>{{ _('PayPal Donation') }}
-                        </h5>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <p class="mb-3">{{ _('Make a direct donation through PayPal. Secure, fast, and supports continued development.') }}</p>
-                        <div class="mt-auto">
-                            <a href="https://paypal.me/Fordys54" target="_blank" class="btn btn-primary btn-lg w-100">
-                                <i class="fas fa-paypal me-2"></i>{{ _('Donate via PayPal') }}
-                            </a>
+                
+                <!-- Why Support Us -->
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <h4 class="mb-3">{{ _('Why Support Our Mission?') }}</h4>
+                        <div class="row g-4">
+                            <div class="col-12 col-md-6">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <i class="fas fa-gift text-primary fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <h6>{{ _('Free Tools for Everyone') }}</h6>
+                                        <p class="small text-muted">{{ _('We believe financial tools should be accessible to all SMEs, regardless of their size or budget.') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-6">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <i class="fas fa-globe text-success fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <h6>{{ _('Bipartisan Approach') }}</h6>
+                                        <p class="small text-muted">{{ _('Building tools that serve all German businesses, regardless of political affiliation.') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-6">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <i class="fas fa-code text-warning fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <h6>{{ _('Continuous Improvement') }}</h6>
+                                        <p class="small text-muted">{{ _('Your support helps us maintain, update, and add new features to our tools.') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-6">
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <i class="fas fa-heart text-danger fs-4"></i>
+                                    </div>
+                                    <div>
+                                        <h6>{{ _('Community Driven') }}</h6>
+                                        <p class="small text-muted">{{ _('We listen to user feedback and build features that matter to German SMEs.') }}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Impact Statement -->
-        <div class="card shadow mt-4">
-            <div class="card-header bg-light">
-                <h5 class="mb-0">
-                    <i class="fas fa-chart-line me-2"></i>{{ _('Your Impact') }}
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-3 text-center">
-                        <div class="mb-3">
-                            <i class="fas fa-users fa-2x text-primary mb-2"></i>
-                            <h4 class="text-primary">500+</h4>
-                            <small class="text-muted">{{ _('German SMEs Helped') }}</small>
-                        </div>
-                    </div>
-                    <div class="col-md-3 text-center">
-                        <div class="mb-3">
-                            <i class="fas fa-calculator fa-2x text-success mb-2"></i>
-                            <h4 class="text-success">1,200+</h4>
-                            <small class="text-muted">{{ _('Calculations Performed') }}</small>
-                        </div>
-                    </div>
-                    <div class="col-md-3 text-center">
-                        <div class="mb-3">
-                            <i class="fas fa-euro-sign fa-2x text-warning mb-2"></i>
-                            <h4 class="text-warning">€2.5M+</h4>
-                            <small class="text-muted">{{ _('Debt Analyzed') }}</small>
-                        </div>
-                    </div>
-                    <div class="col-md-3 text-center">
-                        <div class="mb-3">
-                            <i class="fas fa-globe fa-2x text-info mb-2"></i>
-                            <h4 class="text-info">15+</h4>
-                            <small class="text-muted">{{ _('Countries Reached') }}</small>
+                
+                <!-- What Your Support Enables -->
+                <div class="row mt-5">
+                    <div class="col-12">
+                        <h4 class="mb-3">{{ _('What Your Support Enables') }}</h4>
+                        <div class="row g-3">
+                            <div class="col-12 col-md-4">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-server text-primary fs-2 mb-3"></i>
+                                        <h6>{{ _('Server Costs') }}</h6>
+                                        <p class="small text-muted">{{ _('Keeping our tools online and accessible 24/7') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-4">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-bug text-success fs-2 mb-3"></i>
+                                        <h6>{{ _('Bug Fixes') }}</h6>
+                                        <p class="small text-muted">{{ _('Maintaining code quality and fixing issues') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-4">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-plus-circle text-warning fs-2 mb-3"></i>
+                                        <h6>{{ _('New Features') }}</h6>
+                                        <p class="small text-muted">{{ _('Adding new tools and improving existing ones') }}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Future Plans -->
-        <div class="card shadow mt-4">
-            <div class="card-header bg-warning text-dark">
-                <h5 class="mb-0">
-                    <i class="fas fa-rocket me-2"></i>{{ _('What\'s Next?') }}
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6><i class="fas fa-list-check text-primary me-1"></i>{{ _('Planned Features') }}</h6>
-                        <ul class="small">
-                            <li>{{ _('Advanced financial modeling tools') }}</li>
-                            <li>{{ _('Integration with German banking APIs') }}</li>
-                            <li>{{ _('Automated compliance checking') }}</li>
-                            <li>{{ _('Multi-language support (French, Spanish)') }}</li>
-                            <li>{{ _('Mobile app development') }}</li>
-                        </ul>
-                    </div>
-                    <div class="col-md-6">
-                        <h6><i class="fas fa-lightbulb text-success me-1"></i>{{ _('Your Ideas Matter') }}</h6>
-                        <p class="small">{{ _('Have suggestions for new features? Your feedback shapes the future of these tools.') }}</p>
-                        <a href="mailto:feedback@smedebttool.com" class="btn btn-outline-primary btn-sm">
-                            <i class="fas fa-envelope me-1"></i>{{ _('Send Feedback') }}
-                        </a>
-                    </div>
+                
+                <!-- Thank You Message -->
+                <div class="alert alert-success mt-5 text-center">
+                    <i class="fas fa-heart me-2"></i>
+                    <strong>{{ _('Thank you for your support!') }}</strong><br>
+                    {{ _('Every contribution helps us maintain and improve these tools for the German SME community.') }}
                 </div>
             </div>
-        </div>
-
-        <!-- Alternative Support -->
-        <div class="card shadow mt-4">
-            <div class="card-header bg-info text-white">
-                <h5 class="mb-0">
-                    <i class="fas fa-hands-helping me-2"></i>{{ _('Other Ways to Help') }}
-                </h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4 text-center">
-                        <i class="fas fa-share-alt fa-2x text-primary mb-2"></i>
-                        <h6>{{ _('Share the Tool') }}</h6>
-                        <p class="small">{{ _('Tell other German SMEs about this free resource') }}</p>
-                    </div>
-                    <div class="col-md-4 text-center">
-                        <i class="fas fa-star fa-2x text-warning mb-2"></i>
-                        <h6>{{ _('Rate & Review') }}</h6>
-                        <p class="small">{{ _('Leave feedback to help others discover the tool') }}</p>
-                    </div>
-                    <div class="col-md-4 text-center">
-                        <i class="fas fa-code fa-2x text-success mb-2"></i>
-                        <h6>{{ _('Contribute Code') }}</h6>
-                        <p class="small">{{ _('Help improve the tool with your expertise') }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Thank You Message -->
-        <div class="text-center mt-5">
-            <div class="alert alert-success">
-                <h5><i class="fas fa-heart text-danger me-2"></i>{{ _('Thank You!') }}</h5>
-                <p class="mb-0">{{ _('Your support helps me continue building tools that make a real difference for German businesses. Together, we\'re strengthening international cooperation through technology.') }}</p>
-            </div>
-            <p class="text-muted">
-                <small>{{ _('Made with') }} <i class="fas fa-heart text-danger"></i> {{ _('by a friendly American citizen for German SMEs') }}</small>
-            </p>
         </div>
     </div>
 </div>
