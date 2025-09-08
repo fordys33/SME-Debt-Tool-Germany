@@ -179,6 +179,9 @@ body {
 .fab:active {
     transform: scale(0.95);
 }
+
+/* Print Styles */
+@media print {
     .navbar,
     .btn,
     .progress,
@@ -742,29 +745,6 @@ body {
     
     .debt-entry:hover {
         background-color: #6c757d;
-    }
-}
-
-/* Print Styles */
-@media print {
-    .navbar,
-    .btn,
-    footer {
-        display: none !important;
-    }
-    
-    .card {
-        box-shadow: none !important;
-        border: 1px solid #ddd !important;
-    }
-    
-    .container-fluid {
-        max-width: none !important;
-    }
-    
-    body {
-        background-color: white !important;
-        color: black !important;
     }
 }
 
