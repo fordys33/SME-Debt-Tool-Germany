@@ -580,7 +580,7 @@ def create_app():
             # Send email
             msg = Message(
                 subject=f"SME Debt Tool Feedback from {name}",
-                recipients=['theradicalblack@gmail.com'],
+                recipients=['fordys33@gmail.com'],
                 body=f"""
 New feedback received from SME Debt Management Tool:
 
