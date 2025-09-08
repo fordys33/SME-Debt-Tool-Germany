@@ -1,5 +1,13 @@
 {% extends "base.html" %}
 
+{% block head %}
+<!-- Chart.js for visual results -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Tooltip library -->
+<script src="https://cdn.jsdelivr.net/npm/tippy.js@6/dist/tippy-bundle.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tippy.js@6/dist/tippy.css">
+{% endblock %}
+
 {% block content %}
 <div class="row">
     <div class="col-12 col-lg-8">
@@ -13,35 +21,55 @@
                 <p class="text-muted mb-4">{{ _('Calculate the maximum sustainable debt level for your SME based on income and expenses.') }}</p>
                 
                 <form id="debtBrakeForm">
+                    <!-- Progress Indicator -->
+                    <div class="progress mb-4" style="height: 8px;">
+                        <div class="progress-bar bg-primary" role="progressbar" style="width: 0%" id="formProgress"></div>
+                    </div>
+                    
                     <div class="row g-3">
                         <div class="col-12 col-md-6">
-                            <label for="revenue" class="form-label">{{ _('Annual Revenue') }} (€)</label>
+                            <label for="revenue" class="form-label">
+                                {{ _('Annual Revenue') }} (€)
+                                <i class="fas fa-info-circle text-muted ms-1" data-tippy-content="{{ _('Enter your total annual sales revenue before any expenses. For SMEs, this typically ranges from €50K to €10M depending on your industry.') }}"></i>
+                            </label>
                             <input type="number" class="form-control" id="revenue" name="revenue" 
-                                   placeholder="500000" min="0" step="1000" required>
+                                   placeholder="500000" min="0" step="1000" required
+                                   data-tippy-content="{{ _('Example: If your business makes €500,000 in sales per year, enter 500000') }}">
                             <div class="form-text">{{ _('Your total annual revenue') }}</div>
                         </div>
                         
                         <div class="col-12 col-md-6">
-                            <label for="expenses" class="form-label">{{ _('Annual Expenses') }} (€)</label>
+                            <label for="expenses" class="form-label">
+                                {{ _('Annual Expenses') }} (€)
+                                <i class="fas fa-info-circle text-muted ms-1" data-tippy-content="{{ _('Include all operating costs: salaries, rent, utilities, materials, marketing, etc. Do not include debt payments here.') }}"></i>
+                            </label>
                             <input type="number" class="form-control" id="expenses" name="expenses" 
-                                   placeholder="400000" min="0" step="1000" required>
+                                   placeholder="400000" min="0" step="1000" required
+                                   data-tippy-content="{{ _('Example: If your monthly expenses are €30,000, annual expenses would be €360,000') }}">
                             <div class="form-text">{{ _('Your total annual expenses') }}</div>
                         </div>
                         
                         <div class="col-12 col-md-6">
-                            <label for="existingDebt" class="form-label">{{ _('Existing Debt') }} (€)</label>
+                            <label for="existingDebt" class="form-label">
+                                {{ _('Existing Debt') }} (€)
+                                <i class="fas fa-info-circle text-muted ms-1" data-tippy-content="{{ _('Total outstanding loans, credit lines, and other debt obligations. Include both principal and any accrued interest.') }}"></i>
+                            </label>
                             <input type="number" class="form-control" id="existingDebt" name="existingDebt" 
-                                   placeholder="100000" min="0" step="1000" required>
+                                   placeholder="100000" min="0" step="1000" required
+                                   data-tippy-content="{{ _('Example: If you have €100,000 in bank loans and €50,000 in credit lines, enter 150000') }}">
                             <div class="form-text">{{ _('Current outstanding debt') }}</div>
                         </div>
                         
                         <div class="col-12 col-md-6">
-                            <label for="debtServiceRatio" class="form-label">{{ _('Max Debt Service Ratio') }} (%)</label>
+                            <label for="debtServiceRatio" class="form-label">
+                                {{ _('Max Debt Service Ratio') }} (%)
+                                <i class="fas fa-info-circle text-muted ms-1" data-tippy-content="{{ _('Maximum percentage of your net income that should go toward debt payments. Lower ratios (25-30%) are safer for SMEs.') }}"></i>
+                            </label>
                             <select class="form-select" id="debtServiceRatio" name="debtServiceRatio">
-                                <option value="0.25">25%</option>
-                                <option value="0.30" selected>30%</option>
-                                <option value="0.35">35%</option>
-                                <option value="0.40">40%</option>
+                                <option value="0.25">25% {{ _('(Conservative)') }}</option>
+                                <option value="0.30" selected>30% {{ _('(Balanced)') }}</option>
+                                <option value="0.35">35% {{ _('(Moderate Risk)') }}</option>
+                                <option value="0.40">40% {{ _('(Higher Risk)') }}</option>
                             </select>
                             <div class="form-text">{{ _('Maximum percentage of net income for debt service') }}</div>
                         </div>
@@ -73,6 +101,19 @@
                             </button>
                         </div>
                     </div>
+                    
+                    <!-- Visual Chart -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="fas fa-chart-pie me-2"></i>{{ _('Debt Analysis Overview') }}
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="debtChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                    
                     <div id="resultsContent"></div>
                 </div>
             </div>
@@ -148,6 +189,49 @@
 </div>
 
 <script>
+// Initialize tooltips and form tracking
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize tooltips
+    tippy('[data-tippy-content]', {
+        theme: 'light',
+        placement: 'top',
+        delay: [300, 100]
+    });
+    
+    // Initialize form progress tracking
+    const form = document.getElementById('debtBrakeForm');
+    const inputs = form.querySelectorAll('input[required], select[required]');
+    const progressBar = document.getElementById('formProgress');
+    
+    function updateProgress() {
+        let filled = 0;
+        inputs.forEach(input => {
+            if (input.value.trim() !== '') {
+                filled++;
+            }
+        });
+        const progress = (filled / inputs.length) * 100;
+        progressBar.style.width = progress + '%';
+        
+        // Change color based on completion
+        if (progress === 100) {
+            progressBar.className = 'progress-bar bg-success';
+        } else if (progress >= 50) {
+            progressBar.className = 'progress-bar bg-warning';
+        } else {
+            progressBar.className = 'progress-bar bg-primary';
+        }
+    }
+    
+    // Add event listeners for progress tracking
+    inputs.forEach(input => {
+        input.addEventListener('input', updateProgress);
+        input.addEventListener('change', updateProgress);
+    });
+    
+    // Initialize with current values
+    updateProgress();
+});
 function calculateDebtBrake() {
     const revenue = parseFloat(document.getElementById('revenue').value);
     const expenses = parseFloat(document.getElementById('expenses').value);
@@ -184,6 +268,9 @@ function displayDebtBrakeResults(results) {
     
     // Clear previous results
     resultsContent.innerHTML = '';
+    
+    // Create visual chart
+    createDebtChart(results);
     
     // Create results cards
     const translations = document.getElementById('translations').dataset;
@@ -254,22 +341,139 @@ function displayDebtBrakeResults(results) {
     resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+function createDebtChart(results) {
+    const ctx = document.getElementById('debtChart');
+    if (!ctx) return;
+    
+    // Destroy existing chart if it exists
+    if (window.debtChart) {
+        window.debtChart.destroy();
+    }
+    
+    const revenue = parseFloat(document.getElementById('revenue').value);
+    const expenses = parseFloat(document.getElementById('expenses').value);
+    const existingDebt = parseFloat(document.getElementById('existingDebt').value);
+    
+    window.debtChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Revenue', 'Expenses', 'Existing Debt', 'Available Capacity'],
+            datasets: [{
+                data: [
+                    revenue,
+                    expenses,
+                    existingDebt,
+                    Math.max(0, results.maxNewDebt)
+                ],
+                backgroundColor: [
+                    '#28a745', // Revenue - green
+                    '#dc3545', // Expenses - red
+                    '#ffc107', // Existing Debt - yellow
+                    '#17a2b8'  // Available Capacity - blue
+                ],
+                borderWidth: 2,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': €' + context.parsed.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
 function resetForm() {
     document.getElementById('debtBrakeForm').reset();
     document.getElementById('results').style.display = 'none';
 }
 
-function formatNumber(value) {
-    if (typeof value === 'number') {
-        if (value >= 1000000) {
-            return '€' + (value / 1000000).toFixed(1) + 'M';
-        } else if (value >= 1000) {
-            return '€' + (value / 1000).toFixed(1) + 'K';
-        } else {
-            return '€' + value.toFixed(2);
-        }
+function exportToPDF() {
+    // Simple PDF export using browser print
+    window.print();
+}
+
+function exportToExcel() {
+    const results = getCurrentResults();
+    if (!results) {
+        alert('Please calculate results first');
+        return;
     }
-    return value;
+    
+    // Create CSV content
+    const csvContent = [
+        ['Debt Brake Calculator Results'],
+        ['Date', new Date().toLocaleDateString()],
+        [''],
+        ['Input Data'],
+        ['Annual Revenue', document.getElementById('revenue').value],
+        ['Annual Expenses', document.getElementById('expenses').value],
+        ['Existing Debt', document.getElementById('existingDebt').value],
+        ['Debt Service Ratio', document.getElementById('debtServiceRatio').value],
+        [''],
+        ['Results'],
+        ['Net Income', results.netIncome],
+        ['Max Monthly Debt Service', results.maxDebtService],
+        ['Max New Debt Capacity', results.maxNewDebt],
+        ['Current Debt-to-Income Ratio', (results.debtToIncomeRatio * 100).toFixed(1) + '%'],
+        ['Sustainable', results.isSustainable ? 'Yes' : 'No']
+    ];
+    
+    // Convert to CSV string
+    const csvString = csvContent.map(row => 
+        row.map(cell => `"${cell}"`).join(',')
+    ).join('\n');
+    
+    // Download CSV file
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'debt_brake_results.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function getCurrentResults() {
+    const revenue = parseFloat(document.getElementById('revenue').value);
+    const expenses = parseFloat(document.getElementById('expenses').value);
+    const existingDebt = parseFloat(document.getElementById('existingDebt').value);
+    const debtServiceRatio = parseFloat(document.getElementById('debtServiceRatio').value);
+    
+    if (!revenue || !expenses || existingDebt === undefined) {
+        return null;
+    }
+    
+    const netIncome = revenue - expenses;
+    const maxDebtService = netIncome * debtServiceRatio;
+    const maxNewDebt = Math.max(0, (maxDebtService * 12) - existingDebt);
+    const debtToIncomeRatio = existingDebt / netIncome;
+    const isSustainable = debtToIncomeRatio <= debtServiceRatio;
+    
+    return {
+        netIncome: netIncome,
+        maxDebtService: maxDebtService,
+        maxNewDebt: maxNewDebt,
+        debtToIncomeRatio: debtToIncomeRatio,
+        isSustainable: isSustainable
+    };
 }
 </script>
 {% endblock %}

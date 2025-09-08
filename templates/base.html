@@ -70,8 +70,21 @@
     }
     </script>
     
-    <title>{% block title %}{{ _('SME Debt Management Tool - Germany') }}{% endblock %}</title>
-</head>
+    <!-- Service Worker Registration -->
+    <script>
+        // Register service worker for offline functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/static/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed:', error);
+                    });
+            });
+        }
+    </script>
 <body>
     <!-- Skip to main content for accessibility -->
     <a href="#main-content" class="visually-hidden-focusable">Skip to main content</a>
@@ -151,7 +164,45 @@
         </div>
     </nav>
 
-    <!-- Main Content with top padding for fixed navbar -->
+    <!-- Quick Access Menu (Mobile) -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="quickAccessMenu" aria-labelledby="quickAccessMenuLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="quickAccessMenuLabel">
+                <i class="fas fa-bolt me-2"></i>{{ _('Quick Access') }}
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="d-grid gap-2">
+                <a href="{{ url_for('debt_brake') }}" class="btn btn-primary">
+                    <i class="fas fa-shield-alt me-2"></i>{{ _('Debt Brake Calculator') }}
+                </a>
+                <a href="{{ url_for('cost_analysis') }}" class="btn btn-success">
+                    <i class="fas fa-calculator me-2"></i>{{ _('Cost Analysis') }}
+                </a>
+                <a href="{{ url_for('funding_guidance') }}" class="btn btn-info">
+                    <i class="fas fa-euro-sign me-2"></i>{{ _('Funding Programs') }}
+                </a>
+                <a href="{{ url_for('covenant_tracking') }}" class="btn btn-warning">
+                    <i class="fas fa-clipboard-check me-2"></i>{{ _('Covenant Tracking') }}
+                </a>
+            </div>
+            <hr>
+            <div class="d-grid gap-2">
+                <a href="{{ url_for('about') }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-info-circle me-2"></i>{{ _('About') }}
+                </a>
+                <a href="{{ url_for('donation') }}" class="btn btn-outline-danger">
+                    <i class="fas fa-heart me-2"></i>{{ _('Support Us') }}
+                </a>
+            </div>
+        </div>
+    <!-- Floating Action Button (Mobile) -->
+    <div class="fab-container d-lg-none">
+        <button class="fab btn btn-primary rounded-circle shadow-lg" type="button" data-bs-toggle="offcanvas" data-bs-target="#quickAccessMenu" aria-controls="quickAccessMenu">
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
     <main id="main-content" class="container-fluid px-3 py-4" style="margin-top: 76px;">
         {% block content %}{% endblock %}
     </main>
