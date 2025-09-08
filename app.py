@@ -17,6 +17,17 @@ def create_app():
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
     
+    # Production settings
+    if os.environ.get('FLASK_ENV') == 'production':
+        app.config['DEBUG'] = False
+        app.config['TESTING'] = False
+        app.config['SESSION_COOKIE_SECURE'] = True
+        app.config['SESSION_COOKIE_HTTPONLY'] = True
+        app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+    else:
+        app.config['DEBUG'] = True
+        app.config['TESTING'] = True
+    
     # Email configuration
     app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
     app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))

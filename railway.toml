@@ -11,5 +11,5 @@ restartPolicyMaxRetries = 10
 [environments]
 [environments.production]
 FLASK_ENV = "production"
-SECRET_KEY = "your-production-secret-key-change-this"
+SECRET_KEY = "sme-debt-tool-production-secret-key-2025"
 PORT = "5000"
