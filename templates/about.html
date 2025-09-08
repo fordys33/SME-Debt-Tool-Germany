@@ -165,121 +165,19 @@
         <div class="card mt-4">
             <div class="card-header">
                 <h4 class="mb-0">
-                    <i class="fas fa-envelope me-2"></i>{{ _('Contact & Feedback') }}
+                    <i class="fas fa-envelope me-2"></i>{{ _('Contact & Support') }}
                 </h4>
             </div>
             <div class="card-body">
-                <p class="mb-3">{{ _('We welcome your feedback and suggestions for improvement.') }}</p>
+                <p class="mb-3">{{ _('We appreciate your interest in our SME Debt Management Tool.') }}</p>
                 <div class="d-grid gap-2">
                     <a href="{{ url_for('donation') }}" class="btn btn-outline-primary">
                         <i class="fas fa-heart me-2"></i>{{ _('Support Us') }}
                     </a>
-                    <button class="btn btn-outline-secondary" onclick="showFeedbackForm()">
-                        <i class="fas fa-comment me-2"></i>{{ _('Send Feedback') }}
-                    </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Feedback Modal -->
-<div class="modal fade" id="feedbackModal" tabindex="-1" aria-labelledby="feedbackModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="feedbackModalLabel">{{ _('Send Feedback') }}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="feedbackForm">
-                    <div class="mb-3">
-                        <label for="feedbackName" class="form-label">{{ _('Your Name') }}</label>
-                        <input type="text" class="form-control" id="feedbackName" name="feedbackName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="feedbackEmail" class="form-label">{{ _('Email Address') }}</label>
-                        <input type="email" class="form-control" id="feedbackEmail" name="feedbackEmail" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="feedbackMessage" class="form-label">{{ _('Message') }}</label>
-                        <textarea class="form-control" id="feedbackMessage" name="feedbackMessage" rows="4" required></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ _('Cancel') }}</button>
-                <button type="button" class="btn btn-primary" onclick="submitFeedback()">{{ _('Send Feedback') }}</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-function showFeedbackForm() {
-    const modal = new bootstrap.Modal(document.getElementById('feedbackModal'));
-    modal.show();
-}
-
-function submitFeedback() {
-    const name = document.getElementById('feedbackName').value.trim();
-    const email = document.getElementById('feedbackEmail').value.trim();
-    const message = document.getElementById('feedbackMessage').value.trim();
-    
-    // Basic client-side validation
-    if (!name || !email || !message) {
-        showMobileError('{{ _("Please fill in all fields.") }}');
-        return;
-    }
-    
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        showMobileError('{{ _("Please enter a valid email address.") }}');
-        return;
-    }
-    
-    // Show loading state
-    const submitBtn = document.querySelector('#feedbackModal .btn-primary');
-    const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>{{ _("Sending...") }}';
-    submitBtn.disabled = true;
-    
-    // Prepare form data
-    const formData = new FormData();
-    formData.append('name', name);
-    formData.append('email', email);
-    formData.append('message', message);
-    
-    // Send feedback via AJAX
-    fetch('/submit-feedback', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            showMobileSuccess(data.message);
-            
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('feedbackModal'));
-            modal.hide();
-            
-            // Reset form
-            document.getElementById('feedbackForm').reset();
-        } else {
-            showMobileError(data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showMobileError('{{ _("An error occurred while sending your feedback. Please try again later.") }}');
-    })
-    .finally(() => {
-        // Reset button state
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-    });
-}
-</script>
 {% endblock %}

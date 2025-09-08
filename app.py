@@ -559,26 +559,8 @@ def create_app():
             session['language'] = lang
         return redirect(request.referrer or url_for('index'))
     
-    # Feedback submission route
-    @app.route('/submit-feedback', methods=['POST'])
-    def submit_feedback():
-        try:
-            name = request.form.get('name', '').strip()
-            email = request.form.get('email', '').strip()
-            message = request.form.get('message', '').strip()
-            
-            # Validate required fields
-            if not all([name, email, message]):
-                return jsonify({'success': False, 'message': _('Please fill in all fields.')}), 400
-            
-            # Basic email validation
-            import re
-            email_regex = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
-            if not re.match(email_regex, email):
-                return jsonify({'success': False, 'message': _('Please enter a valid email address.')}), 400
-            
-            # Send email
-            msg = Message(
+    # Error handlers
+    @app.errorhandler(404)
                 subject=f"SME Debt Tool Feedback from {name}",
                 recipients=['fordys33@gmail.com'],
                 body=f"""
