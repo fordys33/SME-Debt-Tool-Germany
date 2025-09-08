@@ -29,4 +29,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')" || exit 1
 
 # Run the application
-CMD ["python", "app.py"]
+CMD ["sh", "-c", "echo 'Starting container...' && python --version && echo 'Python version OK' && python -c 'import app; print(\"App import successful\")' && echo 'Starting application...' && python app.py"]

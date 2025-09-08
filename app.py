@@ -588,4 +588,11 @@ app = create_app()
 # Railway deployment: Always run the app
 port = int(os.environ.get('PORT', 5000))
 print(f"Starting SME Debt Tool on port {port}")
-app.run(host='0.0.0.0', port=port, debug=False)
+print(f"FLASK_ENV: {os.environ.get('FLASK_ENV', 'development')}")
+print(f"SECRET_KEY configured: {'Yes' if app.config['SECRET_KEY'] != 'dev-secret-key-change-in-production' else 'No'}")
+
+try:
+    app.run(host='0.0.0.0', port=port, debug=False)
+except Exception as e:
+    print(f"Error starting application: {e}")
+    raise
