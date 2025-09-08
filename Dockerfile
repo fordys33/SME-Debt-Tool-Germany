@@ -1,23 +1,3 @@
-# Use official Python image
-FROM python:3.11-slim
-
-# Set working directory
-WORKDIR /app
-
-# Copy project files
-COPY . .
-
-# Install dependencies
-RUN pip install --upgrade pip && pip install -r requirements.txt
-
-# Expose port 8000 for gunicorn
-EXPOSE 8000
-
-# Ensure start.sh uses Unix line endings and is executable
-RUN sed -i 's/\r$//' start.sh && chmod +x start.sh
-
-# Start the app using the startup script
-CMD ["./start.sh"]
 FROM python:3.11-slim
 
 # Set working directory
@@ -36,6 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY . .
+RUN chmod +x app.py
 
 # Create non-root user
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
