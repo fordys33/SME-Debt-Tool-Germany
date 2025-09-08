@@ -561,35 +561,6 @@ def create_app():
     
     # Error handlers
     @app.errorhandler(404)
-                subject=f"SME Debt Tool Feedback from {name}",
-                recipients=['fordys33@gmail.com'],
-                body=f"""
-New feedback received from SME Debt Management Tool:
-
-Name: {name}
-Email: {email}
-Message:
-{message}
-
----
-This feedback was submitted via the About page feedback form.
-Timestamp: {request.headers.get('Date', 'Unknown')}
-User Agent: {request.headers.get('User-Agent', 'Unknown')}
-IP Address: {request.remote_addr}
-                """,
-                sender=app.config['MAIL_DEFAULT_SENDER']
-            )
-            
-            app.mail.send(msg)
-            
-            return jsonify({'success': True, 'message': _('Thank you for your feedback! We appreciate your input.')})
-            
-        except Exception as e:
-            print(f"Error sending feedback email: {e}")
-            return jsonify({'success': False, 'message': _('An error occurred while sending your feedback. Please try again later.')}), 500
-    
-    # Error handlers
-    @app.errorhandler(404)
     def not_found_error(error):
         return render_template('404.html'), 404
     
