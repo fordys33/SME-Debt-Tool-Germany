@@ -9,7 +9,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, 
+                static_folder='static',
+                static_url_path='/static')
     
     # Configuration
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
@@ -572,5 +574,7 @@ def create_app():
 
 app = create_app()
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+# Railway deployment: Always run the app
+port = int(os.environ.get('PORT', 5000))
+print(f"Starting SME Debt Tool on port {port}")
+app.run(host='0.0.0.0', port=port, debug=False)

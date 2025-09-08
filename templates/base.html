@@ -20,7 +20,9 @@
     <meta property="og:description" content="{% block og_description %}Comprehensive debt management solutions for German SMEs{% endblock %}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.url }}">
-    <meta property="og:image" content="{{ url_for('static', filename='og-image.png') }}">
+    <meta property="og:image" content="{{ url_for('static', filename='favicon.ico') }}">
+    <meta property="og:image:width" content="32">
+    <meta property="og:image:height" content="32">
     <meta property="og:site_name" content="SME Debt Management Tool">
     <meta property="og:locale" content="de_DE">
     
@@ -28,13 +30,12 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{% block twitter_title %}SME Debt Management Tool - Germany{% endblock %}">
     <meta name="twitter:description" content="{% block twitter_description %}Comprehensive debt management solutions for German SMEs{% endblock %}">
-    <meta name="twitter:image" content="{{ url_for('static', filename='og-image.png') }}">
+    <meta name="twitter:image" content="{{ url_for('static', filename='favicon.ico') }}">
     
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.ico') }}">
     
     <!-- Web App Manifest -->
     <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
