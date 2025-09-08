@@ -1,3 +1,20 @@
+# Use official Python image
+FROM python:3.11-slim
+
+# Set working directory
+WORKDIR /app
+
+# Copy project files
+COPY . .
+
+# Install dependencies
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+# Expose port 8000 for gunicorn
+EXPOSE 8000
+
+# Start the app with gunicorn
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8000"]
 FROM python:3.11-slim
 
 # Set working directory
@@ -6,32 +23,27 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
-    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
 COPY requirements.txt .
 
-# Install Python dependencies with clean installation
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir -r requirements.txt
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY . .
-
-# Make start.sh executable
-RUN chmod +x start.sh
 
 # Create non-root user
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
 
-# Expose port (Railway will set PORT environment variable)
-EXPOSE $PORT
+# Expose port
+EXPOSE 5000
 
 # Health check
-HEALTHCHECK --interval=10s --timeout=10s --start-period=30s --retries=3 \
-    CMD curl -f --max-time 5 http://localhost:$PORT/health || exit 1
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:5000/health || exit 1
 
-# Run the startup script
-CMD ["./start.sh"]
+# Run the application
+CMD ["python", "app.py"]
