@@ -50,5 +50,48 @@
             "type": "image/png",
             "form_factor": "wide"
         }
-    ]
+    ],
+    "shortcuts": [
+        {
+            "name": "Schuldenbremse",
+            "short_name": "Debt Brake",
+            "description": "Berechnen Sie das maximale nachhaltige Schuldenniveau",
+            "url": "/debt-brake",
+            "icons": [
+                {
+                    "src": "/static/favicon-32x32.png",
+                    "sizes": "32x32"
+                }
+            ]
+        },
+        {
+            "name": "Kostenanalyse",
+            "short_name": "Cost Analysis",
+            "description": "Analysieren Sie die Gesamtkosten der Kreditaufnahme",
+            "url": "/cost-analysis",
+            "icons": [
+                {
+                    "src": "/static/favicon-32x32.png",
+                    "sizes": "32x32"
+                }
+            ]
+        },
+        {
+            "name": "Schulden-Schneeball",
+            "short_name": "Debt Snowball",
+            "description": "Priorisieren Sie Schuldenrückzahlungen",
+            "url": "/debt-snowball",
+            "icons": [
+                {
+                    "src": "/static/favicon-32x32.png",
+                    "sizes": "32x32"
+                }
+            ]
+        }
+    ],
+    "related_applications": [],
+    "prefer_related_applications": false,
+    "edge_side_panel": {
+        "preferred_width": 400
+    }
 }

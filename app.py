@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_mail import Mail, Message
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -510,6 +511,10 @@ def create_app():
     
     # Make translation function available in templates
     app.jinja_env.globals.update(_=_)
+    
+    @app.route('/health')
+    def health():
+        return jsonify({'status': 'healthy', 'timestamp': str(datetime.now())})
     
     @app.route('/')
     def index():
