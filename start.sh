@@ -29,6 +29,16 @@ if ! python -c "from app import create_app; print('App import successful')"; the
     exit 1
 fi
 
+# Test if gunicorn is available
+echo "Checking gunicorn installation..."
+if ! command -v gunicorn &> /dev/null; then
+    echo "Gunicorn not found, installing..."
+    pip install --no-cache-dir gunicorn==21.2.0
+fi
+
+# Verify gunicorn version
+echo "Gunicorn version: $(gunicorn --version)"
+
 echo "App import successful, starting server..."
 
 echo "Starting gunicorn server..."

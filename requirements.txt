@@ -7,3 +7,5 @@ itsdangerous==2.1.2
 gunicorn==21.2.0
 python-dotenv==1.0.0
 Flask-Mail==0.9.1
+setuptools>=65.0.0
+wheel>=0.37.0
