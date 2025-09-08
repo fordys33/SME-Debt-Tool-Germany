@@ -514,7 +514,20 @@ def create_app():
     
     @app.route('/health')
     def health():
-        return jsonify({'status': 'healthy', 'timestamp': str(datetime.now())})
+        try:
+            # Basic health check
+            return jsonify({
+                'status': 'healthy',
+                'timestamp': str(datetime.now()),
+                'version': '1.0.0',
+                'service': 'SME Debt Management Tool'
+            }), 200
+        except Exception as e:
+            return jsonify({
+                'status': 'unhealthy',
+                'error': str(e),
+                'timestamp': str(datetime.now())
+            }), 500
     
     @app.route('/')
     def index():

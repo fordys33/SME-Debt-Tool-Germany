@@ -11,6 +11,9 @@ echo "Environment: $FLASK_ENV"
 echo "Python path: $(which python)"
 echo "Working directory: $(pwd)"
 
+# Export PORT for the application
+export PORT=$PORT
+
 # Set Flask environment
 export FLASK_ENV=${FLASK_ENV:-production}
 export FLASK_APP=app.py
@@ -43,4 +46,4 @@ echo "App import successful, starting server..."
 
 echo "Starting gunicorn server..."
 # Start the application with gunicorn
-exec gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 60 --log-level info app:app
+exec gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 60 --log-level info --access-logfile - --error-logfile - app:app

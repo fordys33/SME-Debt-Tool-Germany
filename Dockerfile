@@ -29,9 +29,9 @@ USER appuser
 # Expose port (Railway will set PORT environment variable)
 EXPOSE $PORT
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=60s --start-period=30s --retries=5 \
-    CMD curl -f --max-time 10 http://localhost:$PORT/health || exit 1
+# Health check with better error handling
+HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 \
+    CMD curl -f --max-time 10 --retry 3 --retry-delay 2 http://localhost:$PORT/health || exit 1
 
 # Run the startup script
 CMD ["./start.sh"]
