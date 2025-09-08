@@ -13,8 +13,11 @@ RUN pip install --upgrade pip && pip install -r requirements.txt
 # Expose port 8000 for gunicorn
 EXPOSE 8000
 
-# Start the app with gunicorn
-CMD ["gunicorn", "app:create_app()", "--bind", "0.0.0.0:8000"]
+# Ensure start.sh uses Unix line endings and is executable
+RUN sed -i 's/\r$//' start.sh && chmod +x start.sh
+
+# Start the app using the startup script
+CMD ["./start.sh"]
 FROM python:3.11-slim
 
 # Set working directory
