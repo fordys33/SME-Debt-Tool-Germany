@@ -1,5 +1,4 @@
 import os
-from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_mail import Mail, Message
 from werkzeug.middleware.proxy_fix import ProxyFix
@@ -15,30 +14,20 @@ def create_app():
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
     
-    # Railway-specific configuration
-    if os.environ.get('RAILWAY_ENVIRONMENT'):
-        app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', os.urandom(24).hex())
+    # Email configuration
+    app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
+    app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
+    app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', 'True').lower() == 'true'
+    app.config['MAIL_USE_SSL'] = os.environ.get('MAIL_USE_SSL', 'False').lower() == 'true'
+    app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+    app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@smedebttool.com')
     
-    # Email configuration (optional)
-    mail_username = os.environ.get('MAIL_USERNAME')
-    mail_password = os.environ.get('MAIL_PASSWORD')
+    # Initialize Flask-Mail
+    mail = Mail(app)
     
-    if mail_username and mail_password:
-        app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
-        app.config['MAIL_PORT'] = int(os.environ.get('MAIL_PORT', 587))
-        app.config['MAIL_USE_TLS'] = os.environ.get('MAIL_USE_TLS', 'True').lower() == 'true'
-        app.config['MAIL_USE_SSL'] = os.environ.get('MAIL_USE_SSL', 'False').lower() == 'true'
-        app.config['MAIL_USERNAME'] = mail_username
-        app.config['MAIL_PASSWORD'] = mail_password
-        app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'noreply@smedebttool.com')
-        
-        # Initialize Flask-Mail only if email is configured
-        mail = Mail(app)
-        app.mail = mail
-    else:
-        # Disable email functionality if not configured
-        app.mail = None
-        print("Email not configured - feedback functionality will be disabled")
+    # Make mail available to routes
+    app.mail = mail
     
     # Use ProxyFix for production deployment
     app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
@@ -522,23 +511,6 @@ def create_app():
     # Make translation function available in templates
     app.jinja_env.globals.update(_=_)
     
-    @app.route('/health')
-    def health():
-        try:
-            # Basic health check
-            return jsonify({
-                'status': 'healthy',
-                'timestamp': str(datetime.now()),
-                'version': '1.0.0',
-                'service': 'SME Debt Management Tool'
-            }), 200
-        except Exception as e:
-            return jsonify({
-                'status': 'unhealthy',
-                'error': str(e),
-                'timestamp': str(datetime.now())
-            }), 500
-    
     @app.route('/')
     def index():
         return render_template('index.html')
@@ -600,12 +572,11 @@ def create_app():
             if not re.match(email_regex, email):
                 return jsonify({'success': False, 'message': _('Please enter a valid email address.')}), 400
             
-            # Send email if configured, otherwise just log
-            if app.mail:
-                msg = Message(
-                    subject=f"SME Debt Tool Feedback from {name}",
-                    recipients=['fordys33@gmail.com'],
-                    body=f"""
+            # Send email
+            msg = Message(
+                subject=f"SME Debt Tool Feedback from {name}",
+                recipients=['theradicalblack@gmail.com'],
+                body=f"""
 New feedback received from SME Debt Management Tool:
 
 Name: {name}
@@ -618,16 +589,13 @@ This feedback was submitted via the About page feedback form.
 Timestamp: {request.headers.get('Date', 'Unknown')}
 User Agent: {request.headers.get('User-Agent', 'Unknown')}
 IP Address: {request.remote_addr}
-                    """,
-                    sender=app.config['MAIL_DEFAULT_SENDER']
-                )
-                
-                app.mail.send(msg)
-                return jsonify({'success': True, 'message': _('Thank you for your feedback! We appreciate your input.')})
-            else:
-                # Log feedback if email is not configured
-                print(f"Feedback received (email not configured): Name={name}, Email={email}, Message={message[:100]}...")
-                return jsonify({'success': True, 'message': _('Thank you for your feedback! (Note: Email functionality is currently disabled)')})
+                """,
+                sender=app.config['MAIL_DEFAULT_SENDER']
+            )
+            
+            app.mail.send(msg)
+            
+            return jsonify({'success': True, 'message': _('Thank you for your feedback! We appreciate your input.')})
             
         except Exception as e:
             print(f"Error sending feedback email: {e}")
@@ -645,7 +613,3 @@ IP Address: {request.remote_addr}
     return app
 
 app = create_app()
-
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(debug=False, host='0.0.0.0', port=port)
