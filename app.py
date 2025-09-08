@@ -9,24 +9,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def create_app():
-    app = Flask(__name__, 
-                static_folder='static',
-                static_url_path='/static')
+    app = Flask(__name__)
     
     # Configuration
     app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-secret-key-change-in-production')
     app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
-    
-    # Production settings
-    if os.environ.get('FLASK_ENV') == 'production':
-        app.config['DEBUG'] = False
-        app.config['TESTING'] = False
-        app.config['SESSION_COOKIE_SECURE'] = True
-        app.config['SESSION_COOKIE_HTTPONLY'] = True
-        app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-    else:
-        app.config['DEBUG'] = True
-        app.config['TESTING'] = True
     
     # Email configuration
     app.config['MAIL_SERVER'] = os.environ.get('MAIL_SERVER', 'smtp.gmail.com')
@@ -572,6 +559,53 @@ def create_app():
             session['language'] = lang
         return redirect(request.referrer or url_for('index'))
     
+    # Feedback submission route
+    @app.route('/submit-feedback', methods=['POST'])
+    def submit_feedback():
+        try:
+            name = request.form.get('name', '').strip()
+            email = request.form.get('email', '').strip()
+            message = request.form.get('message', '').strip()
+            
+            # Validate required fields
+            if not all([name, email, message]):
+                return jsonify({'success': False, 'message': _('Please fill in all fields.')}), 400
+            
+            # Basic email validation
+            import re
+            email_regex = r'^[^\s@]+@[^\s@]+\.[^\s@]+$'
+            if not re.match(email_regex, email):
+                return jsonify({'success': False, 'message': _('Please enter a valid email address.')}), 400
+            
+            # Send email
+            msg = Message(
+                subject=f"SME Debt Tool Feedback from {name}",
+                recipients=['fordys33@gmail.com'],
+                body=f"""
+New feedback received from SME Debt Management Tool:
+
+Name: {name}
+Email: {email}
+Message:
+{message}
+
+---
+This feedback was submitted via the About page feedback form.
+Timestamp: {request.headers.get('Date', 'Unknown')}
+User Agent: {request.headers.get('User-Agent', 'Unknown')}
+IP Address: {request.remote_addr}
+                """,
+                sender=app.config['MAIL_DEFAULT_SENDER']
+            )
+            
+            app.mail.send(msg)
+            
+            return jsonify({'success': True, 'message': _('Thank you for your feedback! We appreciate your input.')})
+            
+        except Exception as e:
+            print(f"Error sending feedback email: {e}")
+            return jsonify({'success': False, 'message': _('An error occurred while sending your feedback. Please try again later.')}), 500
+    
     # Error handlers
     @app.errorhandler(404)
     def not_found_error(error):
@@ -585,21 +619,6 @@ def create_app():
 
 app = create_app()
 
-# Railway deployment: Always run the app
-port = int(os.environ.get('PORT', 5000))
-print(f"Starting SME Debt Tool on port {port}")
-print(f"FLASK_ENV: {os.environ.get('FLASK_ENV', 'development')}")
-print(f"SECRET_KEY configured: {'Yes' if app.config['SECRET_KEY'] != 'dev-secret-key-change-in-production' else 'No'}")
-print(f"DEBUG mode: {app.config.get('DEBUG', False)}")
-print(f"TESTING mode: {app.config.get('TESTING', False)}")
-
-try:
-    print("🚀 Starting Flask application server...")
-    app.run(host='0.0.0.0', port=port, debug=False)
-except Exception as e:
-    print(f"❌ Error starting application: {e}")
-    print(f"❌ Error type: {type(e).__name__}")
-    import traceback
-    print("❌ Full traceback:")
-    traceback.print_exc()
-    raise
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=False, host='0.0.0.0', port=port)
