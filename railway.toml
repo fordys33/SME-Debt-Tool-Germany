@@ -2,9 +2,9 @@
 builder = "dockerfile"
 
 [deploy]
-startCommand = "python app.py"
+startCommand = "/app/start.sh"
 healthcheckPath = "/health"
-healthcheckTimeout = 120
+healthcheckTimeout = 180
 restartPolicyType = "ON_FAILURE"
 restartPolicyMaxRetries = 10
 
@@ -13,3 +13,4 @@ restartPolicyMaxRetries = 10
 FLASK_ENV = "production"
 SECRET_KEY = "sme-debt-tool-production-secret-key-2025"
 PORT = "5000"
+PYTHONUNBUFFERED = "1"

@@ -590,9 +590,16 @@ port = int(os.environ.get('PORT', 5000))
 print(f"Starting SME Debt Tool on port {port}")
 print(f"FLASK_ENV: {os.environ.get('FLASK_ENV', 'development')}")
 print(f"SECRET_KEY configured: {'Yes' if app.config['SECRET_KEY'] != 'dev-secret-key-change-in-production' else 'No'}")
+print(f"DEBUG mode: {app.config.get('DEBUG', False)}")
+print(f"TESTING mode: {app.config.get('TESTING', False)}")
 
 try:
+    print("🚀 Starting Flask application server...")
     app.run(host='0.0.0.0', port=port, debug=False)
 except Exception as e:
-    print(f"Error starting application: {e}")
+    print(f"❌ Error starting application: {e}")
+    print(f"❌ Error type: {type(e).__name__}")
+    import traceback
+    print("❌ Full traceback:")
+    traceback.print_exc()
     raise

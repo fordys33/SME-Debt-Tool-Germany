@@ -6,6 +6,7 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements first for better caching
@@ -24,9 +25,23 @@ USER appuser
 # Expose port
 EXPOSE 5000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')" || exit 1
+# Health check with better error handling
+HEALTHCHECK --interval=30s --timeout=15s --start-period=30s --retries=5 \
+    CMD curl -f http://localhost:5000/health || exit 1
 
-# Run the application
-CMD ["sh", "-c", "echo 'Starting container...' && python --version && echo 'Python version OK' && python -c 'import app; print(\"App import successful\")' && echo 'Starting application...' && python app.py"]
+# Create startup script
+RUN echo '#!/bin/bash\n\
+echo "=== Container Startup Diagnostics ===\n\
+echo "Python version: $(python --version)"\n\
+echo "Working directory: $(pwd)"\n\
+echo "PORT environment variable: ${PORT:-Not set}"\n\
+echo "FLASK_ENV: ${FLASK_ENV:-Not set}"\n\
+echo "Files in directory:"\n\
+ls -la\n\
+echo "=== Testing Application Import ===\n\
+python -c "import sys; print(f\"Python path: {sys.path[:3]}\"); import app; print(\"✅ App import successful\")" || { echo "❌ App import failed"; exit 1; }\n\
+echo "=== Starting Application ===\n\
+exec python app.py' > /app/start.sh && chmod +x /app/start.sh
+
+# Run the application with diagnostics
+CMD ["/app/start.sh"]
