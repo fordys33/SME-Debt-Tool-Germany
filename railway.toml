@@ -1,0 +1,15 @@
+[build]
+builder = "dockerfile"
+
+[deploy]
+startCommand = "python app.py"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[environments]
+[environments.production]
+FLASK_ENV = "production"
+SECRET_KEY = "your-production-secret-key-change-this"
+PORT = "5000"
